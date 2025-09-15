@@ -1,5 +1,7 @@
 package chess;
 
+import java.sql.Array;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -11,7 +13,12 @@ import java.util.List;
  */
 public class ChessPiece {
 
+    private final ChessGame.TeamColor pieceColor;
+    private final PieceType type;
+
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
+        this.pieceColor = pieceColor;
+        this.type = type;
     }
 
     /**
@@ -30,14 +37,14 @@ public class ChessPiece {
      * @return Which team this chess piece belongs to
      */
     public ChessGame.TeamColor getTeamColor() {
-        throw new RuntimeException("Not implemented");
+        return pieceColor;
     }
 
     /**
      * @return which type of chess piece this piece is
      */
     public PieceType getPieceType() {
-        throw new RuntimeException("Not implemented");
+        return type;
     }
 
     /**
@@ -47,7 +54,40 @@ public class ChessPiece {
      *
      * @return Collection of valid moves
      */
+    private Collection<ChessMove> bishopMoves(ChessBoard board, ChessPosition myPosition) {
+        List<ChessMove> moves = new ArrayList<>();
+        ChessPiece myPiece = board.getPiece(myPosition);
+        if (myPiece == null) return moves;
+        int[] rowDirections = {1, 1, -1, -1};
+        int[] colDirections = {1, -1, 1, -1};
+
+        for (int d = 0; d < 4; d++) {
+            int r = myPosition.getRow()+rowDirections[d];
+            int c = myPosition.getColumn()+colDirections[d];
+            while (true) {
+                ChessPosition newPosition = new ChessPosition(r, c);
+                ChessPiece otherPiece = board.getPiece(newPosition);
+                if (r < 1 || r > 8 || c < 1 || c > 8) break;
+                if (otherPiece == null) {
+                    moves.add(new ChessMove(myPosition, newPosition, null));
+                } else if (otherPiece.getTeamColor() != myPiece.getTeamColor()) {
+                    moves.add(new ChessMove(myPosition, newPosition, null));
+                    break; // cause we killed the piece
+                } else {break;}
+                r += rowDirections[d];
+                c += colDirections[d];
+            }
+        }
+        return moves;
+    }
+
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+        ChessPiece piece = board.getPiece(myPosition);
+        if (piece == null) return List.of();
+        List<ChessMove> moves = new ArrayList<>();
+        if (piece.getPieceType() == PieceType.BISHOP) {
+            return bishopMoves(board, myPosition);
+        }
         return List.of();
     }
 }
