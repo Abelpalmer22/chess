@@ -123,6 +123,58 @@ public class ChessPiece {
         return moves;
     }
 
+    private Collection<ChessMove> pawnMoves(ChessBoard board, ChessPosition myPosition) { List<ChessMove> moves = new ArrayList<>();
+        ChessPiece myPiece = board.getPiece(myPosition);
+        int currRow = myPosition.getRow();
+        int currCol = myPosition.getColumn();
+        if (myPiece == null) return moves;
+        int forwardDirection = (myPiece.pieceColor == ChessGame.TeamColor.WHITE) ? 1 : -1;
+        if ((myPiece.pieceColor == ChessGame.TeamColor.WHITE && currRow == 2) || (myPiece.pieceColor == ChessGame.TeamColor.BLACK && currRow == 7)) {
+            ChessPosition singleStepPos = new ChessPosition(currRow+forwardDirection, currCol);
+            ChessPiece singlePiece = board.getPiece(singleStepPos);
+            ChessPosition doubleStepPos = new ChessPosition(currRow+2*forwardDirection, currCol);
+            ChessPiece doublePiece = board.getPiece(doubleStepPos);
+            if (singlePiece == null && doublePiece == null) {
+                moves.add(new ChessMove(myPosition, doubleStepPos, null));
+            }
+        }
+        int r = currRow+forwardDirection;
+        int c = currCol;
+        ChessPosition nonCapturingPosition = new ChessPosition(r, c);
+        ChessPiece otherPiece = board.getPiece(nonCapturingPosition);
+        if (otherPiece == null) {
+            if (r == 8 || r == 1) {
+                for (PieceType promotion: new ChessPiece.PieceType[] {
+                        PieceType.QUEEN,
+                        PieceType.ROOK,
+                        PieceType.BISHOP,
+                        PieceType.KNIGHT })
+                    moves.add(new ChessMove(myPosition, nonCapturingPosition, promotion));
+            }
+            else {moves.add(new ChessMove(myPosition, nonCapturingPosition, null));}
+        }
+        int[] rowDirs = {1, -1};
+        for (int d = 0; d < 2; d++) {
+            r = currRow + forwardDirection;
+            c = currCol + rowDirs[d];
+            if (r < 1 || r > 8 || c < 1 || c > 8) continue;
+            ChessPosition capturingPosition = new ChessPosition(r, c);
+            otherPiece = board.getPiece(capturingPosition);
+            if (otherPiece != null && otherPiece.getTeamColor() != myPiece.getTeamColor()) {
+                if (r == 8 || r == 1) {
+                    for (PieceType promotion: new ChessPiece.PieceType[] {
+                            PieceType.QUEEN,
+                            PieceType.ROOK,
+                            PieceType.BISHOP,
+                            PieceType.KNIGHT })
+                        moves.add(new ChessMove(myPosition, nonCapturingPosition, promotion));
+                }
+                else {moves.add(new ChessMove(myPosition, capturingPosition, null));}
+            }
+        }
+        return moves;
+    }
+
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         ChessPiece piece = board.getPiece(myPosition);
         if (piece == null) return List.of();
@@ -135,6 +187,9 @@ public class ChessPiece {
         }
         else if (piece.getPieceType() == PieceType.KNIGHT) {
             return knightMoves(board, myPosition);
+        }
+        else if (piece.getPieceType() == PieceType.PAWN) {
+            return pawnMoves(board, myPosition);
         }
         return List.of();
     }
