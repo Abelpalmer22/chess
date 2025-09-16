@@ -85,9 +85,30 @@ public class ChessPiece {
         List<ChessMove> moves = new ArrayList<>();
         ChessPiece myPiece = board.getPiece(myPosition);
         if (myPiece == null) return moves;
-        int[] rowDirections = {1, 0, -1, 0};
-        int[] colDirections = {0, 1, 0, -1};
-        for (int d = 0; d < 4; d++) {
+        int[] rowDirections = {1, 1, 0, -1, -1, -1, 0, 1};
+        int[] colDirections = {0, 1, 1, 1, 0, -1, -1, -1};
+        for (int d = 0; d < 8; d++) {
+            int r = myPosition.getRow()+rowDirections[d];
+            int c = myPosition.getColumn()+colDirections[d];
+            ChessPosition newPosition = new ChessPosition(r, c);
+            ChessPiece otherPiece = board.getPiece(newPosition);
+            if (r < 1 || r > 8 || c < 1 || c > 8) continue;
+            if (otherPiece == null) {
+                moves.add(new ChessMove(myPosition, newPosition, null));
+            } else if (otherPiece.getTeamColor() != myPiece.getTeamColor()) {
+                moves.add(new ChessMove(myPosition, newPosition, null));
+            }
+        }
+        return moves;
+    }
+
+    private Collection<ChessMove> knightMoves(ChessBoard board, ChessPosition myPosition) {
+        List<ChessMove> moves = new ArrayList<>();
+        ChessPiece myPiece = board.getPiece(myPosition);
+        if (myPiece == null) return moves;
+        int[] rowDirections = {2, 1, -1, -2, -2, -1, 1, 2};
+        int[] colDirections = {1, 2, 2, 1, -1, -2, -2, -1};
+        for (int d = 0; d < 8; d++) {
             int r = myPosition.getRow()+rowDirections[d];
             int c = myPosition.getColumn()+colDirections[d];
             ChessPosition newPosition = new ChessPosition(r, c);
@@ -111,6 +132,9 @@ public class ChessPiece {
         }
         else if (piece.getPieceType() == PieceType.KING) {
             return kingMoves(board, myPosition);
+        }
+        else if (piece.getPieceType() == PieceType.KNIGHT) {
+            return knightMoves(board, myPosition);
         }
         return List.of();
     }
