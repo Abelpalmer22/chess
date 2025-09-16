@@ -169,12 +169,20 @@ public class ChessPiece {
                             PieceType.ROOK,
                             PieceType.BISHOP,
                             PieceType.KNIGHT })
-                        moves.add(new ChessMove(myPosition, nonCapturingPosition, promotion));
+                        moves.add(new ChessMove(myPosition, capturingPosition, promotion));
                 }
                 else {moves.add(new ChessMove(myPosition, capturingPosition, null));}
             }
         }
         return moves;
+    }
+
+    @Override
+    public String toString() {
+        return "ChessPiece{" +
+                "pieceColor=" + pieceColor +
+                ", type=" + type +
+                '}';
     }
 
     private Collection<ChessMove> queenMoves(ChessBoard board, ChessPosition myPosition) {
