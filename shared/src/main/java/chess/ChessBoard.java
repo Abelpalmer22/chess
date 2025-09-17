@@ -27,6 +27,17 @@ public class ChessBoard {
         squares[position.getRow()-1][position.getColumn()-1] = piece;
     }
 
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ChessBoard)) return false;
+        ChessBoard other = (ChessBoard) o;
+        return java.util.Arrays.deepEquals(this.squares, other.squares);
+    }
+
+    public int hashCode() {
+        return java.util.Arrays.deepHashCode(squares);
+    }
+
     /**
      * Gets a chess piece on the chessboard
      *
@@ -39,14 +50,33 @@ public class ChessBoard {
         int r = position.getRow();
         int c = position.getColumn();
         if (r < 1 || r > 8 || c < 1 || c > 8) return null;
-        return squares[r-1][c-1];
+        return squares[r - 1][c - 1];
     }
+
 
     /**
      * Sets the board to the default starting board
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        throw new RuntimeException("Not implemented");
+        squares = new ChessPiece[8][8];
+        ChessPiece.PieceType[] backRank = {
+                ChessPiece.PieceType.ROOK,
+                ChessPiece.PieceType.KNIGHT,
+                ChessPiece.PieceType.BISHOP,
+                ChessPiece.PieceType.QUEEN,
+                ChessPiece.PieceType.KING,
+                ChessPiece.PieceType.BISHOP,
+                ChessPiece.PieceType.KNIGHT,
+                ChessPiece.PieceType.ROOK
+        };
+        for (int col = 1; col <= 8; col++) {
+            addPiece(new ChessPosition(1, col), new ChessPiece(ChessGame.TeamColor.WHITE, backRank[col-1]));
+            addPiece(new ChessPosition(2, col), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN));
+        }
+        for (int col = 1; col <= 8; col++) {
+            addPiece(new ChessPosition(8, col), new ChessPiece(ChessGame.TeamColor.BLACK, backRank[col-1]));
+            addPiece(new ChessPosition(7, col), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN));
+        }
     }
 }
