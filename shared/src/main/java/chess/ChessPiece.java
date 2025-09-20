@@ -144,7 +144,9 @@ public class ChessPiece {
         ChessPiece myPiece = board.getPiece(myPosition);
         int currRow = myPosition.getRow();
         int currCol = myPosition.getColumn();
-        if (myPiece == null) return moves;
+        if (myPiece == null) {
+            return moves;
+        }
         int forwardDirection = (myPiece.pieceColor == ChessGame.TeamColor.WHITE) ? 1 : -1;
         if ((myPiece.pieceColor == ChessGame.TeamColor.WHITE && currRow == 2) || (myPiece.pieceColor == ChessGame.TeamColor.BLACK && currRow == 7)) {
             ChessPosition singleStepPos = new ChessPosition(currRow+forwardDirection, currCol);
