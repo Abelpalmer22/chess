@@ -59,7 +59,7 @@ public class ChessPiece {
 
     @Override
     public int hashCode() {
-        return 31 * pieceColor.hashCode() + type.hashCode();
+        return java.util.Objects.hash(pieceColor, type);
     }
 
 
@@ -71,7 +71,7 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     private Collection<ChessMove> bishopMoves(ChessBoard board, ChessPosition myPosition) {
-        List<ChessMove> moves = new ArrayList<>();
+        ArrayList<ChessMove> moves = new ArrayList<>();
         ChessPiece myPiece = board.getPiece(myPosition);
         if (myPiece == null) return moves;
         int[] rowDirections = {1, 1, -1, -1};
@@ -275,9 +275,8 @@ public class ChessPiece {
         else if (piece.getPieceType() == PieceType.QUEEN) {
             return queenMoves(board, myPosition);
         }
-        else if (piece.getPieceType() == PieceType.ROOK) {
+        else {
             return rookMoves(board, myPosition);
         }
-        return List.of();
     }
 }

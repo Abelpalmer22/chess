@@ -27,6 +27,16 @@ public class ChessBoard {
         squares[position.getRow()-1][position.getColumn()-1] = piece;
     }
 
+    public ChessBoard copy() {
+        ChessBoard newBoard = new ChessBoard();
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (this.squares[i][j] == newBoard.squares[i][j]) newBoard.squares[i][j] = this.squares[i][j];
+            }
+        }
+        return newBoard;
+    }
+
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof ChessBoard)) return false;
