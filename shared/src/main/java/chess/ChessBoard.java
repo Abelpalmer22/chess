@@ -31,7 +31,8 @@ public class ChessBoard {
         ChessBoard newBoard = new ChessBoard();
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                if (this.squares[i][j] == newBoard.squares[i][j]) newBoard.squares[i][j] = this.squares[i][j];
+                if (this.squares[i][j] == null) continue;
+                newBoard.squares[i][j] = new ChessPiece(this.squares[i][j].getTeamColor(), this.squares[i][j].getPieceType());
             }
         }
         return newBoard;

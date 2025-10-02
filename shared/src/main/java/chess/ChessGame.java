@@ -1,5 +1,6 @@
 package chess;
 
+import java.lang.reflect.GenericDeclaration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -50,7 +51,7 @@ public class ChessGame {
                 ChessPiece currPiece = board.squares[i][j];
                 if (currPiece == null) continue;
                 if (currPiece.getTeamColor() == color) {
-                    pieces.add(new ChessPosition(i,j));
+                    pieces.add(new ChessPosition(i+1,j+1));
                 }
                 else {continue;}
             }
@@ -78,8 +79,9 @@ public class ChessGame {
             int endRow = finalPosition.getRow();
             int endCol = finalPosition.getColumn();
             ChessBoard fakeBoard = board.copy();
+            ChessPiece movingPiece = fakeBoard.getPiece(startPosition);
             fakeBoard.squares[startRow-1][startCol-1] = null;
-            fakeBoard.squares[endRow-1][endCol-1] = new ChessPiece(piece.getTeamColor(), piece.getPieceType());
+            fakeBoard.squares[endRow-1][endCol-1] = movingPiece;
             if (!inCheck(fakeBoard, color)) validMoves.add(move);
         }
         return validMoves;
@@ -111,19 +113,26 @@ public class ChessGame {
     }
 
     public boolean inCheck(ChessBoard board, TeamColor teamColor) {
-        TeamColor otherTeamColor = (teamColor == TeamColor.WHITE) ? TeamColor.BLACK : TeamColor.WHITE;
-        for (ChessPosition enemy: getPieces(board, otherTeamColor)) {
+        ChessPosition kingPos = null;
+        for (ChessPosition pos : getPieces(board, teamColor)) {
+            ChessPiece piece = board.getPiece(pos);
+            if (piece != null && piece.getPieceType() == ChessPiece.PieceType.KING) {
+                kingPos = pos;
+                break;
+            }
+        }
+        TeamColor other = (teamColor == TeamColor.WHITE) ? TeamColor.BLACK : TeamColor.WHITE;
+        for (ChessPosition enemy : getPieces(board, other)) {
             ChessPiece enemyPiece = board.getPiece(enemy);
-            for (ChessMove move: enemyPiece.pieceMoves(board, enemy)) {
-                ChessPosition endPosition = move.getEndPosition();
-                ChessPiece endPiece = board.getPiece(endPosition);
-                if (endPiece == null) continue;
-                if (endPiece.getPieceType() == ChessPiece.PieceType.KING &&
-                        endPiece.getTeamColor() == teamColor) return true;
+            for (ChessMove move : enemyPiece.pieceMoves(board, enemy)) {
+                if (move.getEndPosition().equals(kingPos)) {
+                    return true;
+                }
             }
         }
         return false;
     }
+
 
     /**
      * Determines if the given team is in check
