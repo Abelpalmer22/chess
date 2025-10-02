@@ -96,6 +96,11 @@ public class ChessGame {
     public void makeMove(ChessMove move) throws InvalidMoveException {
         ChessPosition startPosition = move.getStartPosition();
         ChessPosition endPosition = move.getEndPosition();
+        int startRow = startPosition.getRow();
+        int startCol = startPosition.getColumn();
+        ChessPiece startPiece = board.squares[startRow-1][startCol-1];
+        if (startPiece== null) throw new InvalidMoveException("Invalid move");
+        if (startPiece.getTeamColor() != currentTurn) throw new InvalidMoveException("Invalid move");
         if (!validMoves(startPosition).contains(move)) throw new InvalidMoveException("Invalid move");
         ChessPiece piece = board.getPiece(startPosition);
         int r1 = startPosition.getRow();
