@@ -20,6 +20,23 @@ public class ChessGame {
         currentTurn = TeamColor.WHITE;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof ChessGame)) return false;
+        ChessGame other = (ChessGame) obj;
+        return currentTurn == other.currentTurn &&
+                (board != null ? board.equals(other.board) : other.board == null);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (board != null ? board.hashCode() : 0);
+        result = 31 * result + (currentTurn != null ? currentTurn.hashCode() : 0);
+        return result;
+    }
+
+
     /**
      * @return Which team's turn it is
      */
