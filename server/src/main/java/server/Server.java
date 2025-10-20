@@ -1,6 +1,11 @@
 package server;
 
+import Service.UserService;
 import io.javalin.*;
+import com.google.gson.Gson;
+import io.javalin.http.Context;
+import java.util.Map;
+
 
 public class Server {
 
@@ -8,11 +13,11 @@ public class Server {
     private final UserService userService;
 
     public Server() {
-        userService = new UserService;
+        userService = new UserService();
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
 
-        javalin.delete("db", ctx -> ctx.result("{}"));
-        javalin.post("user", this::register);
+        javalin.delete("/db", ctx -> ctx.result("{}"));
+        javalin.post("/user", this::register);
 
         // Register your endpoints and exception handlers here.
 
@@ -23,7 +28,7 @@ public class Server {
         String reqJson = ctx.body();
         var user = serializer.fromJson(reqJson, Map.class);
 
-        var authData = userService.register(user)
+        var authData = userService.register(user);
 
 
         ctx.result(serializer.toJson(authData));
@@ -36,5 +41,10 @@ public class Server {
 
     public void stop() {
         javalin.stop();
+    }
+
+    private void clearDatabase(Context ctx) {
+        ctx.status(200);
+        ctx.result("{}");
     }
 }
