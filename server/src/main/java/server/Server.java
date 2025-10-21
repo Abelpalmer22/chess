@@ -1,37 +1,36 @@
 package server;
 
+import Service.ClearService;
+import Service.GameService;
 import Service.UserService;
 import io.javalin.*;
 import com.google.gson.Gson;
 import io.javalin.http.Context;
+import org.eclipse.jetty.server.Authentication;
+
 import java.util.Map;
 
 
 public class Server {
 
     private final Javalin javalin;
-    private final UserService userService;
+    private final UserHandler userHandler;
+    private final GameHandler gameHandler;
+    private final ClearHandler clearHandler;
 
     public Server() {
-        userService = new UserService();
+        var userService = new UserService();
+        var gameService = new GameService();
+        var clearService = new ClearService();
+
+        userHandler = new UserHandler(userService);
+        gameHandler = new GameHandler(gameService, userService);
+        clearHandler = new ClearHandler(clearService, userService, gameService);
+
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
-
-        javalin.delete("/db", ctx -> ctx.result("{}"));
-        javalin.post("/user", this::register);
-
-        // Register your endpoints and exception handlers here.
-
-    }
-
-    private void register(Context ctx) {
-        var serializer = new Gson();
-        String reqJson = ctx.body();
-        var user = serializer.fromJson(reqJson, Map.class);
-
-        var authData = userService.register(user);
-
-
-        ctx.result(serializer.toJson(authData));
+        userHandler.addRoutes(javalin);
+        gameHandler.addRoutes(javalin);
+        clearHandler.addRoutes(javalin);
     }
 
     public int run(int desiredPort) {

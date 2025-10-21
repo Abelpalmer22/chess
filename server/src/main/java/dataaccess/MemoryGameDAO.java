@@ -2,23 +2,29 @@ package dataaccess;
 import model.GameData;
 import java.util.*;
 
-public class MemoryGameDAO {
+public class MemoryGameDAO implements GameDAO {
     private final Map<Integer, GameData> games = new HashMap<>();
     private int nextID = 1;
 
     public void createGame(GameData game) {
-        game.setGameID(nextID++);
-        games.put(game.getGameID(), game);
+        GameData withID = new GameData(
+                nextID++,
+                game.whiteUsername(),
+                game.blackUsername(),
+                game.gameName(),
+                game.game()
+        );
+        games.put(withID.gameID(), withID);
     }
 
-    @Override
+
     public GameData getGame(int gameID) {
         return games.get(gameID);
     }
 
-    @Override
+
     public void updateGame(GameData game) {
-        games.put(game.getGameID(), game);
+        games.put(game.gameID(), game);
     }
 
     public void clear() {
