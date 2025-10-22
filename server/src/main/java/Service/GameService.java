@@ -1,37 +1,34 @@
 package Service;
-import dataaccess.GameDAO;
-import dataaccess.MemoryGameDAO;
-import model.GameData;
-import model.AuthData;
+
+import Requests.CreateGameRequest;
+import Results.CreateGameResult;
 import chess.ChessGame;
-import java.util.Map;
+import dataaccess.AuthDAO;
+import dataaccess.DataAccessException;
+import dataaccess.UserDAO;
+import model.GameData;
+import dataaccess.GameDAO;
+
+import javax.xml.crypto.Data;
+import java.util.*;
 
 public class GameService {
-    private final GameDAO gameDAO = new MemoryGameDAO();
+    private final AuthDAO authDAO;
+    private final GameDAO gameDAO;
+    private final UserDAO userDAO;
 
-    public GameData createGame(Map<String, Object> gameInfo, AuthData auth) {
-        String creator = auth.username();
-        String opponent = (String) gameInfo.get("opponent");
-        String gameName = (String) gameInfo.get("gameName");
-        GameData newGame = new GameData(0, creator, opponent, gameName, new ChessGame());
+    public GameService(AuthDAO authDAO, GameDAO gameDAO) {
+        this.authDAO = authDAO;
+        this.gameDAO = gameDAO;
+    }
+
+    public CreateGameResult createGame(CreateGameRequest req) throws DataAccessException {
+        if (req.playerUsername() == null) {
+            throw new DataAccessException("Ersteller existiert nicht");
+        }
+        ChessGame newChessGame = new ChessGame();
+        GameData newGame = new GameData(gameDAO.createNewGameID(), newGame.whiteUsername(), newGame.blackUsername(), req.playerUsername(), newChessGame);
         gameDAO.createGame(newGame);
-        return newGame;
+        return new CreateGameResult(newGame.gameID());
     }
-
-    public GameData joinGame(int gameID, AuthData auth) {
-        GameData oldGame = gameDAO.getGame(gameID);
-        if (oldGame == null) {throw new RuntimeException("No such game");}
-        GameData updated = new GameData(
-                oldGame.gameID(),
-                oldGame.whiteUsername(),
-                auth.username(),
-                oldGame.gameName(),
-                oldGame.game()
-        );
-        gameDAO.updateGame(updated);
-
-        return updated;
-    }
-
-    public void clearGames() {gameDAO.clear();}
 }

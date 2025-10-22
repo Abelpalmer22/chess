@@ -1,4 +1,6 @@
 package Results;
+import java.util.ArrayList;
+import model.GameData;
 
-public class ListGamesResult {
+public record ListGamesResult(ArrayList<GameData> games){
 }

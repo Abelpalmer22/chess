@@ -1,10 +1,13 @@
 package dataaccess;
-
+import java.util.List;
 import model.GameData;
 
 public interface GameDAO {
-    void createGame(GameData game);
+    GameData createGame(GameData game);
     GameData getGame(int gameID);
     void updateGame(GameData game);
+    int createNewGameID();
     void clear();
+
+    List<GameData> listAllGames();
 }

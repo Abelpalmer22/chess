@@ -1,32 +1,36 @@
 package dataaccess;
 
 import model.AuthData;
+import model.UserData;
+
+import javax.xml.crypto.Data;
 import java.util.HashMap;
 import java.util.Map;
 
 public class MemoryUserDAO {
-    private final Map<String, AuthData> usersByToken = new HashMap<>();
-    private final Map<String, AuthData> usersByUsername = new HashMap<>();
+    private final Map<String, UserData> users = new HashMap<>();
 
-    public void createUser(String usenrame, String authToken) {
-        if (usersByUsername.containsKey(usenrame)) {
-            throw new RuntimeException("User already exists");
+    public UserData createUser(UserData user) throws DataAccessException {
+        if (user == null || user.username() == null) {
+            throw new DataAccessException("Benutzer lasst sich nicht Null sein");
         }
-        AuthData authData = new AuthData(authToken, usenrame);
-        usersByUsername.put(usenrame, authData);
-        usersByToken.put(authToken, authData);
+        if (users.containsKey(user.username())) {
+            throw new DataAccessException("Benutzer existiert schon");
+        }
+        users.put(user.username(), user);
+        return user;
     }
 
-    public AuthData getUserByUsername(String username) {
-        return usersByUsername.get(username);
-    }
-
-    public AuthData getUserByToken(String authToken) {
-        return usersByToken.get(authToken);
+    public UserData getUser(String username) throws DataAccessException {
+        if (username == null) {
+            throw new DataAccessException("Benutzernamen lasst sich nicht Null sein");
+        }
+        UserData user = users.get(username);
+        if (user == null) {throw new DataAccessException("Benutzer nicht gefunden");}
+        return user;
     }
 
     public void clear() {
-        usersByToken.clear();
-        usersByUsername.clear();
+        users.clear();
     }
 }
