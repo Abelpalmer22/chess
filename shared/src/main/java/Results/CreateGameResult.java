@@ -1,4 +1,3 @@
 package Results;
 
-public record CreateGameResult(int gameID) {
-}
+public record CreateGameResult(int gameID) {}

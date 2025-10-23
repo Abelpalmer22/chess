@@ -1,4 +1,4 @@
 package Results;
 
-public class JoinGameResult {
-}
+// Spec shows 200 with an empty body; an empty record serializes as {}
+public record JoinGameResult() {}

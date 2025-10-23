@@ -1,46 +1,40 @@
 package dataaccess;
-
-import dataaccess.GameDAO;
 import model.GameData;
+
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class MemoryGameDAO implements GameDAO {
-    private final Map<Integer, GameData> games = new HashMap<>();
-    private int nextID = 1;
+    private final Map<Integer, GameData> gameData = new HashMap<>();
+    private int gameID = 1;
 
-    @Override
-    public GameData createGame(GameData game) {
-        int newID = nextID++;
-        GameData gameToAdd = new GameData(newID, game.whiteUsername(), game.blackUsername(), game.gameName(), game.game());
-        games.put(newID, gameToAdd);
-        return gameToAdd;
+    public GameData createGame(GameData game) throws DataAccessException {
+        if (gameData.get(game.gameID()) != null) throw new DataAccessException("game already exists");
+        gameData.put(game.gameID(), game);
+        return game;
     }
 
-    public int createNewGameID() {return nextID++;}
-
-    @Override
-    public void updateGame(GameData game) {
-        games.put(game.gameID(), game);
+    public GameData getGame(int gameID) throws DataAccessException {
+        if (gameData.get(gameID) == null) throw new DataAccessException("game not found");
+        return gameData.get(gameID);
     }
 
-
-    @Override
-    public GameData getGame(int gameID) {
-        return games.get(gameID);
+    public void updateGame(GameData game) throws DataAccessException {
+        if (!gameData.containsKey(game.gameID())) throw new DataAccessException("Game not found");
+        gameData.put(game.gameID(), game);
     }
 
-    @Override
+    public Collection<GameData> listGames() {
+        return gameData.values();
+    }
+
+    public int makeNewID() {
+        return gameID++;
+    }
+
     public void clear() {
-        games.clear();
-        nextID = 1;
-    }
-
-    @Override
-    public List<GameData> listAllGames() {
-        return new ArrayList<>(games.values());
+        gameData.clear();
     }
 }
-

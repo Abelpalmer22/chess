@@ -2,10 +2,8 @@ package dataaccess;
 
 import model.UserData;
 
-import javax.xml.crypto.Data;
-
 public interface UserDAO {
-    UserData createUser(UserData user) throws DataAccessException;
-    UserData getUser(String username) throws DataAccessException;
-    void clear() throws DataAccessException;
+    public void createUser(UserData user) throws DataAccessException;
+    public UserData getUser(String username) throws DataAccessException;
+    public void clear();
 }

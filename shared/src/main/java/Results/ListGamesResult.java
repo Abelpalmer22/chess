@@ -1,6 +1,6 @@
 package Results;
-import java.util.ArrayList;
+
+import java.util.Collection;
 import model.GameData;
 
-public record ListGamesResult(ArrayList<GameData> games){
-}
+public record ListGamesResult(Collection<GameData> games) {}

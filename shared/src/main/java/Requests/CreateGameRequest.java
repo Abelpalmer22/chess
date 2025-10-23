@@ -1,3 +1,3 @@
 package Requests;
 
-public record CreateGameRequest(String gameName, String playerUsername, String opponent) {}
+public record CreateGameRequest(String gameName) {}

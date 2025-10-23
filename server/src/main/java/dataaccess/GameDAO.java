@@ -1,13 +1,19 @@
 package dataaccess;
-import java.util.List;
+
 import model.GameData;
+import java.util.Collection;
 
 public interface GameDAO {
-    GameData createGame(GameData game);
-    GameData getGame(int gameID);
-    void updateGame(GameData game);
-    int createNewGameID();
-    void clear();
 
-    List<GameData> listAllGames();
+    GameData createGame(GameData game) throws DataAccessException;
+
+    GameData getGame(int gameID) throws DataAccessException;
+
+    void updateGame(GameData game) throws DataAccessException;
+
+    Collection<GameData> listGames();
+
+    int makeNewID();
+
+    void clear();
 }

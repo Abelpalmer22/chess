@@ -1,33 +1,23 @@
 package dataaccess;
+import model.*;
 
-import model.AuthData;
-import model.UserData;
-
-import javax.xml.crypto.Data;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MemoryUserDAO {
+public class MemoryUserDAO implements UserDAO {
     private final Map<String, UserData> users = new HashMap<>();
 
-    public UserData createUser(UserData user) throws DataAccessException {
-        if (user == null || user.username() == null) {
-            throw new DataAccessException("Benutzer lasst sich nicht Null sein");
-        }
-        if (users.containsKey(user.username())) {
-            throw new DataAccessException("Benutzer existiert schon");
-        }
+    public void createUser(UserData user) throws DataAccessException {
+        if (user.username() == null) throw new DataAccessException("Username null");
+        if (user.password() == null) throw new DataAccessException("Password null");
+        if (users.get(user.username()) != null) throw new DataAccessException("User already exists");
         users.put(user.username(), user);
-        return user;
     }
 
     public UserData getUser(String username) throws DataAccessException {
-        if (username == null) {
-            throw new DataAccessException("Benutzernamen lasst sich nicht Null sein");
-        }
-        UserData user = users.get(username);
-        if (user == null) {throw new DataAccessException("Benutzer nicht gefunden");}
-        return user;
+        if (username == null) throw new DataAccessException("Username null");
+        if (users.get(username) == null) throw new DataAccessException("User not found");
+        return users.get(username);
     }
 
     public void clear() {
