@@ -36,12 +36,12 @@ public class UserService {
         }
         try {
             UserData user = userDAO.getUser(registerRequest.username());
-            throw new DataAccessException("username already taken");
         } catch (DataAccessException e) {
             userDAO.createUser(new UserData(registerRequest.username(), registerRequest.password(), registerRequest.email()));
             AuthData newAuth = authDAO.createAuth(registerRequest.username());
             return new RegisterResult(registerRequest.username(), newAuth.authToken());
         }
+        throw new DataAccessException("already taken");
     }
 
     public LoginResult login(LoginRequest req) throws DataAccessException {

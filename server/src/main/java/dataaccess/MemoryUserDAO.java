@@ -1,6 +1,7 @@
 package dataaccess;
 import model.*;
 
+import javax.xml.crypto.Data;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,7 +16,7 @@ public class MemoryUserDAO implements UserDAO {
     }
 
     public UserData getUser(String username) throws DataAccessException {
-        if (username == null) throw new DataAccessException("Username null");
+        if (username == null) throw new DataAccessException("bad request");
         if (users.get(username) == null) throw new DataAccessException("User not found");
         return users.get(username);
     }
