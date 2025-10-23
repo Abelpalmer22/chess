@@ -48,7 +48,7 @@ public class UserService {
         if (req.username() == null || req.password() == null) throw new DataAccessException("bad request");
         try {
             UserData user = userDAO.getUser(req.username());
-            if (user.password() != req.password()) throw new DataAccessException("unauthorized");
+            if (!user.password().equals(req.password())) throw new DataAccessException("unauthorized");
         } catch (DataAccessException e) {
             throw new DataAccessException("unauthorized");
         }

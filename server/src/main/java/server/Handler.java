@@ -31,7 +31,6 @@ public class Handler {
         try {
             clearService.clear();
             ctx.status(200);
-            ctx.result("{}");
         } catch (Exception e) {
             ctx.status(500);
             ctx.result("{\"message\":\"Error: " + e.getMessage() + "\"}");
@@ -43,7 +42,7 @@ public class Handler {
             RegisterRequest req = serializer.fromJson(ctx.body(), RegisterRequest.class);
             RegisterResult result = userService.register(req);
             ctx.status(200);
-            ctx.json(result);
+            ctx.json(serializer.toJson(result));
         } catch (DataAccessException e) {
             String message = e.getMessage();
             if (message.contains("already taken")) ctx.status(403);
@@ -61,7 +60,7 @@ public class Handler {
             LoginRequest req = serializer.fromJson(ctx.body(), LoginRequest.class);
             LoginResult result = userService.login(req);
             ctx.status(200);
-            ctx.json(result);
+            ctx.json(serializer.toJson(result));
         } catch (DataAccessException e) {
             String message = e.getMessage();
             if (message.contains("bad request")) ctx.status(400);
@@ -80,7 +79,6 @@ public class Handler {
             LogoutRequest req = new LogoutRequest(authToken);
             userService.logout(req);
             ctx.status(200);
-            ctx.json(Map.of());
         } catch (DataAccessException e) {
             String message = e.getMessage();
             if (message.contains("unauthorized")) ctx.status(401);
@@ -98,7 +96,7 @@ public class Handler {
             ListGamesRequest req = new ListGamesRequest(authToken);
             ListGamesResult result = gameService.listGames(req);
             cts.status(200);
-            cts.json(result);
+            cts.json(serializer.toJson(result));
         } catch (DataAccessException e) {
             String message = e.getMessage();
             if (message.contains("unauthorized")) cts.status(401);
@@ -116,7 +114,7 @@ public class Handler {
             CreateGameRequest req = serializer.fromJson(ctx.body(), CreateGameRequest.class);
             CreateGameResult result = gameService.createGame(req, authToken);
             ctx.status(200);
-            ctx.json(result);
+            ctx.json(serializer.toJson(result));
         } catch (DataAccessException e) {
             String message = e.getMessage();
             if (message.contains("bad request")) ctx.status(400);
@@ -135,7 +133,7 @@ public class Handler {
             JoinGameRequest req = serializer.fromJson(ctx.body(), JoinGameRequest.class);
             JoinGameResult result = gameService.joinGame(req, authToken);
             ctx.status(200);
-            ctx.json(result);
+            ctx.json(serializer.toJson(result));
         } catch (DataAccessException e) {
             String message = e.getMessage();
             if (message.contains("bad request")) ctx.status(400);
