@@ -228,25 +228,7 @@ public class ChessPiece {
         int[] rowDirections = {1, 1, 0, -1, -1, -1, 0, 1};
         int[] colDirections = {0, 1, 1, 1, 0, -1, -1, -1};
 
-        for (int d = 0; d < 8; d++) {
-            int r = myPosition.getRow()+rowDirections[d];
-            int c = myPosition.getColumn()+colDirections[d];
-            while (true) {
-                ChessPosition newPosition = new ChessPosition(r, c);
-                ChessPiece otherPiece = board.getPiece(newPosition);
-                if (r < 1 || r > 8 || c < 1 || c > 8) {
-                    break;
-                }
-                if (otherPiece == null) {
-                    moves.add(new ChessMove(myPosition, newPosition, null));
-                } else if (otherPiece.getTeamColor() != myPiece.getTeamColor()) {
-                    moves.add(new ChessMove(myPosition, newPosition, null));
-                    break; // cause we killed the piece
-                } else {break;}
-                r += rowDirections[d];
-                c += colDirections[d];
-            }
-        }
+        loopKing(board, myPosition, moves, myPiece, rowDirections, colDirections);
         return moves;
     }
 
