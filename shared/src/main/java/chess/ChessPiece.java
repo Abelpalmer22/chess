@@ -99,6 +99,23 @@ public class ChessPiece {
         }
     }
 
+    private void loopKing(ChessBoard board, ChessPosition myPosition, List<ChessMove> moves, ChessPiece myPiece, int[] rowDirections, int[] colDirections) {
+        for (int d = 0; d < 8; d++) {
+            int r = myPosition.getRow()+rowDirections[d];
+            int c = myPosition.getColumn()+colDirections[d];
+            ChessPosition newPosition = new ChessPosition(r, c);
+            ChessPiece otherPiece = board.getPiece(newPosition);
+            if (r < 1 || r > 8 || c < 1 || c > 8) {
+                continue;
+            }
+            if (otherPiece == null) {
+                moves.add(new ChessMove(myPosition, newPosition, null));
+            } else if (otherPiece.getTeamColor() != myPiece.getTeamColor()) {
+                moves.add(new ChessMove(myPosition, newPosition, null));
+            }
+        }
+    }
+
     private Collection<ChessMove> bishopMoves(ChessBoard board, ChessPosition myPosition) {
         ArrayList<ChessMove> moves = new ArrayList<>();
         ChessPiece myPiece = board.getPiece(myPosition);
@@ -117,20 +134,7 @@ public class ChessPiece {
         }
         int[] rowDirections = {1, 1, 0, -1, -1, -1, 0, 1};
         int[] colDirections = {0, 1, 1, 1, 0, -1, -1, -1};
-        for (int d = 0; d < 8; d++) {
-            int r = myPosition.getRow()+rowDirections[d];
-            int c = myPosition.getColumn()+colDirections[d];
-            ChessPosition newPosition = new ChessPosition(r, c);
-            ChessPiece otherPiece = board.getPiece(newPosition);
-            if (r < 1 || r > 8 || c < 1 || c > 8) {
-                continue;
-            }
-            if (otherPiece == null) {
-                moves.add(new ChessMove(myPosition, newPosition, null));
-            } else if (otherPiece.getTeamColor() != myPiece.getTeamColor()) {
-                moves.add(new ChessMove(myPosition, newPosition, null));
-            }
-        }
+        loopKing(board, myPosition, moves, myPiece, rowDirections, colDirections);
         return moves;
     }
 
@@ -142,20 +146,7 @@ public class ChessPiece {
         }
         int[] rowDirections = {2, 1, -1, -2, -2, -1, 1, 2};
         int[] colDirections = {1, 2, 2, 1, -1, -2, -2, -1};
-        for (int d = 0; d < 8; d++) {
-            int r = myPosition.getRow()+rowDirections[d];
-            int c = myPosition.getColumn()+colDirections[d];
-            ChessPosition newPosition = new ChessPosition(r, c);
-            ChessPiece otherPiece = board.getPiece(newPosition);
-            if (r < 1 || r > 8 || c < 1 || c > 8) {
-                continue;
-            }
-            if (otherPiece == null) {
-                moves.add(new ChessMove(myPosition, newPosition, null));
-            } else if (otherPiece.getTeamColor() != myPiece.getTeamColor()) {
-                moves.add(new ChessMove(myPosition, newPosition, null));
-            }
-        }
+        loopKing(board, myPosition, moves, myPiece, rowDirections, colDirections);
         return moves;
     }
 
