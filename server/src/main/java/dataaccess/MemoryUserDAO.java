@@ -11,6 +11,7 @@ public class MemoryUserDAO implements UserDAO {
         if (user.username() == null) {
             throw new DataAccessException("Username null");
         }
+
         if (user.password() == null) {
             throw new DataAccessException("Password null");
         }
