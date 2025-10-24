@@ -27,6 +27,23 @@ public class Handler {
         this.gameService = gameService;
     }
 
+    private void handleError(Context ctx, Exception e) {
+        int status = 500; // default
+        String message = e.getMessage();
+
+        if (e instanceof DataAccessException exc) {
+            // list all the specs' statuses here
+            if (message.contains("bad request")) status = 400;
+            else if (message.contains("unauthorized")) status = 401;
+            else if (message.contains("already taken")) status = 403;
+            else if (message.contains("forbidden")) status = 403;
+        }
+
+        ctx.status(status);
+        ctx.json(Map.of("message", "Error: " + message));
+    }
+
+
     public void clear(Context ctx) {
         try {
             clearService.clear();
@@ -41,17 +58,9 @@ public class Handler {
         try {
             RegisterRequest req = serializer.fromJson(ctx.body(), RegisterRequest.class);
             RegisterResult result = userService.register(req);
-            ctx.status(200);
-            ctx.json(serializer.toJson(result));
+            ctx.status(200).json(result);
         } catch (DataAccessException e) {
-            String message = e.getMessage();
-            if (message.contains("already taken")) ctx.status(403);
-            else if (message.contains("bad request")) ctx.status(400);
-            else ctx.status(500);
-            ctx.json(Map.of("message", "Error: " + e.getMessage()));
-        } catch (Exception e) {
-            ctx.status(500);
-            ctx.json(Map.of("message", "Error: " + e.getMessage()));
+            handleError(ctx, e);
         }
     }
 
@@ -59,17 +68,9 @@ public class Handler {
         try {
             LoginRequest req = serializer.fromJson(ctx.body(), LoginRequest.class);
             LoginResult result = userService.login(req);
-            ctx.status(200);
-            ctx.json(serializer.toJson(result));
+            ctx.status(200).json(result);
         } catch (DataAccessException e) {
-            String message = e.getMessage();
-            if (message.contains("bad request")) ctx.status(400);
-            else if (message.contains("unauthorized")) ctx.status(401);
-            else ctx.status(500);
-            ctx.json(Map.of("message", "Error: " + e.getMessage()));
-        } catch (Exception e) {
-            ctx.status(500);
-            ctx.json(Map.of("message", "Error: " + e.getMessage()));
+            handleError(ctx, e);
         }
     }
 
@@ -80,13 +81,7 @@ public class Handler {
             userService.logout(req);
             ctx.status(200);
         } catch (DataAccessException e) {
-            String message = e.getMessage();
-            if (message.contains("unauthorized")) ctx.status(401);
-            else ctx.status(500);
-            ctx.json(Map.of("message", "Error: " + e.getMessage()));
-        } catch (Exception e) {
-            ctx.status(500);
-            ctx.json(Map.of("message", "Error: " + e.getMessage()));
+            handleError(ctx, e);
         }
     }
 
@@ -95,16 +90,9 @@ public class Handler {
             String authToken = cts.header("Authorization");
             ListGamesRequest req = new ListGamesRequest(authToken);
             ListGamesResult result = gameService.listGames(req);
-            cts.status(200);
-            cts.json(serializer.toJson(result));
+            cts.status(200).json(result);
         } catch (DataAccessException e) {
-            String message = e.getMessage();
-            if (message.contains("unauthorized")) cts.status(401);
-            else cts.status(500);
-            cts.json(Map.of("message", "Error: " + e.getMessage()));
-        } catch (Exception e) {
-            cts.status(500);
-            cts.json(Map.of("message", "Error: " + e.getMessage()));
+            handleError(cts, e);
         }
     }
 
@@ -113,17 +101,9 @@ public class Handler {
             String authToken = ctx.header("Authorization");
             CreateGameRequest req = serializer.fromJson(ctx.body(), CreateGameRequest.class);
             CreateGameResult result = gameService.createGame(req, authToken);
-            ctx.status(200);
-            ctx.json(serializer.toJson(result));
+            ctx.status(200).json(result);
         } catch (DataAccessException e) {
-            String message = e.getMessage();
-            if (message.contains("bad request")) ctx.status(400);
-            else if (message.contains("unauthorized")) ctx.status(401);
-            else ctx.status(500);
-            ctx.json(Map.of("message", "Error: " + e.getMessage()));
-        } catch (Exception e) {
-            ctx.status(500);
-            ctx.json(Map.of("message", "Error: " + e.getMessage()));
+            handleError(ctx, e);
         }
     }
 
@@ -132,18 +112,9 @@ public class Handler {
             String authToken = ctx.header("Authorization");
             JoinGameRequest req = serializer.fromJson(ctx.body(), JoinGameRequest.class);
             JoinGameResult result = gameService.joinGame(req, authToken);
-            ctx.status(200);
-            ctx.json(serializer.toJson(result));
+            ctx.status(200).json(result);
         } catch (DataAccessException e) {
-            String message = e.getMessage();
-            if (message.contains("bad request")) ctx.status(400);
-            else if (message.contains("unauthorized")) ctx.status(401);
-            else if (message.contains("already taken")) ctx.status(403);
-            else ctx.status(500);
-            ctx.json(Map.of("message", "Error: " + e.getMessage()));
-        } catch (Exception e) {
-            ctx.status(500);
-            ctx.json(Map.of("message", "Error: " + e.getMessage()));
+            handleError(ctx, e);
         }
     }
 }
