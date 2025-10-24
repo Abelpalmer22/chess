@@ -2,8 +2,8 @@ package service;
 
 import dataaccess.*;
 import model.*;
-import Requests.*;
-import Results.*;
+import requests.*;
+import results.*;
 import chess.ChessGame;
 
 import java.util.Collection;
@@ -18,7 +18,7 @@ public class GameService {
     }
 
     public ListGamesResult listGames(ListGamesRequest r) throws DataAccessException {
-        authDAO.getAuth(r.authToken());
+        authDAO.getAuthentication(r.authToken());
         Collection<GameData> games = gameDAO.listGames();
         return new ListGamesResult(games);
     }
@@ -27,7 +27,7 @@ public class GameService {
         if (r == null || r.gameName() == null) {
             throw new DataAccessException("bad request");
         }
-        authDAO.getAuth(authToken);
+        authDAO.getAuthentication(authToken);
         int id = gameDAO.makeNewID();
         GameData game = new GameData(id, null, null, r.gameName(), new ChessGame());
         gameDAO.createGame(game);
@@ -36,10 +36,14 @@ public class GameService {
 
 
     public JoinGameResult joinGame(JoinGameRequest r, String authToken) throws DataAccessException {
-        if (r == null) throw new DataAccessException("bad request");
-        var auth = authDAO.getAuth(authToken);
+        if (r == null) {
+            throw new DataAccessException("bad request");
+        }
+        var auth = authDAO.getAuthentication(authToken);
         String username = auth.username();
-        if (r.playerColor() == null) throw new DataAccessException("bad request");
+        if (r.playerColor() == null) {
+            throw new DataAccessException("bad request");
+        }
         GameData game;
         game = gameDAO.getGame(r.gameID());
         String color = r.playerColor().trim().toUpperCase();

@@ -1,19 +1,16 @@
 package service;
 
-import Requests.LoginRequest;
-import Requests.LogoutRequest;
-import Requests.RegisterRequest;
-import Results.LoginResult;
-import Results.RegisterResult;
+import requests.LoginRequest;
+import requests.LogoutRequest;
+import requests.RegisterRequest;
+import results.LoginResult;
+import results.RegisterResult;
 import dataaccess.DataAccessException;
 import dataaccess.MemoryAuthDAO;
 import dataaccess.MemoryGameDAO;
 import dataaccess.MemoryUserDAO;
-import org.eclipse.jetty.util.log.Log;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import javax.xml.crypto.Data;
 
 public class UserServiceTests {
     MemoryUserDAO userDAO = new MemoryUserDAO();
@@ -27,7 +24,7 @@ public class UserServiceTests {
         Assertions.assertEquals("usernameabel", re.username());
         Assertions.assertNotNull(re.authToken());
         Assertions.assertNotNull(userDAO.getUser("usernameabel"));
-        Assertions.assertDoesNotThrow(() -> authDAO.getAuth(re.authToken()));
+        Assertions.assertDoesNotThrow(() -> authDAO.getAuthentication(re.authToken()));
     }
 
     @Test
@@ -45,7 +42,7 @@ public class UserServiceTests {
         LoginResult logre = userService.login(logreq);
         Assertions.assertEquals("runningoutofusernames", re.username());
         Assertions.assertNotNull(re.authToken());
-        Assertions.assertDoesNotThrow(() -> authDAO.getAuth(re.authToken()));
+        Assertions.assertDoesNotThrow(() -> authDAO.getAuthentication(re.authToken()));
     }
 
     @Test

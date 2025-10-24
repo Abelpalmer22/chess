@@ -31,7 +31,9 @@ public class ChessBoard {
         ChessBoard newBoard = new ChessBoard();
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                if (this.squares[i][j] == null) continue;
+                if (this.squares[i][j] == null) {
+                    continue;
+                }
                 newBoard.squares[i][j] = new ChessPiece(this.squares[i][j].getTeamColor(), this.squares[i][j].getPieceType());
             }
         }
@@ -39,8 +41,12 @@ public class ChessBoard {
     }
 
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ChessBoard)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ChessBoard)) {
+            return false;
+        }
         ChessBoard other = (ChessBoard) o;
         return java.util.Arrays.deepEquals(this.squares, other.squares);
     }
@@ -57,10 +63,14 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        if (position == null) return null;
+        if (position == null) {
+            return null;
+        }
         int r = position.getRow();
         int c = position.getColumn();
-        if (r < 1 || r > 8 || c < 1 || c > 8) return null;
+        if (r < 1 || r > 8 || c < 1 || c > 8) {
+            return null;
+        }
         return squares[r - 1][c - 1];
     }
 

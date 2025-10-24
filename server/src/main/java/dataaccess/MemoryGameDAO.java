@@ -11,18 +11,24 @@ public class MemoryGameDAO implements GameDAO {
     private int gameID = 1;
 
     public GameData createGame(GameData game) throws DataAccessException {
-        if (gameData.get(game.gameID()) != null) throw new DataAccessException("game already exists");
+        if (gameData.get(game.gameID()) != null) {
+            throw new DataAccessException("game already exists");
+        }
         gameData.put(game.gameID(), game);
         return game;
     }
 
     public GameData getGame(int gameID) throws DataAccessException {
-        if (gameData.get(gameID) == null) throw new DataAccessException("bad request");
+        if (gameData.get(gameID) == null) {
+            throw new DataAccessException("bad request");
+        }
         return gameData.get(gameID);
     }
 
     public void updateGame(GameData game) throws DataAccessException {
-        if (!gameData.containsKey(game.gameID())) throw new DataAccessException("Game not found");
+        if (!gameData.containsKey(game.gameID())) {
+            throw new DataAccessException("Game not found");
+        }
         gameData.put(game.gameID(), game);
     }
 

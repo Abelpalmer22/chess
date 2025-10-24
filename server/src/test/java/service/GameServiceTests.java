@@ -1,20 +1,16 @@
 package service;
 
-import Requests.CreateGameRequest;
-import Requests.JoinGameRequest;
-import Requests.ListGamesRequest;
-import Results.CreateGameResult;
-import Results.ListGamesResult;
+import requests.CreateGameRequest;
+import requests.JoinGameRequest;
+import requests.ListGamesRequest;
+import results.CreateGameResult;
+import results.ListGamesResult;
 import chess.ChessGame;
 import dataaccess.*;
 import model.AuthData;
 import model.GameData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import javax.xml.crypto.Data;
-import java.util.ArrayList;
-import java.util.List;
 
 public class GameServiceTests {
     MemoryGameDAO gameDAO = new MemoryGameDAO();
@@ -23,7 +19,7 @@ public class GameServiceTests {
 
     @Test
     void listTestPositive() throws DataAccessException {
-        AuthData tmpAuth = authDAO.createAuth("tmpusername");
+        AuthData tmpAuth = authDAO.createAuthentication("tmpusername");
         ListGamesRequest lgreq = new ListGamesRequest(tmpAuth.authToken());
         ListGamesResult lgr = gameService.listGames(lgreq);
         Assertions.assertNotNull(tmpAuth);
@@ -39,7 +35,7 @@ public class GameServiceTests {
 
     @Test
     void createPositive() throws DataAccessException {
-        AuthData auth = authDAO.createAuth("someusername");
+        AuthData auth = authDAO.createAuthentication("someusername");
         CreateGameRequest cgr = new CreateGameRequest("someGame");
         Assertions.assertDoesNotThrow(() -> gameService.createGame(cgr, auth.authToken()));
         CreateGameResult res = gameService.createGame(cgr, auth.authToken());
@@ -58,11 +54,11 @@ public class GameServiceTests {
 
     @Test
     void joinTestPositive() throws DataAccessException {
-        AuthData authwhite = authDAO.createAuth("someusernameidk");
+        AuthData authwhite = authDAO.createAuthentication("someusernameidk");
         ChessGame ourGame = new ChessGame();
         GameData game = new GameData(1, null, null, "carlson", ourGame);
         gameDAO.createGame(game);
-        AuthData authblack = authDAO.createAuth("black");
+        AuthData authblack = authDAO.createAuthentication("black");
         JoinGameRequest reqwhite = new JoinGameRequest("WHITE", game.gameID());
         JoinGameRequest reqblack = new JoinGameRequest("BLACK", game.gameID());
         Assertions.assertDoesNotThrow(() -> gameService.joinGame(reqwhite, authwhite.authToken()));
@@ -77,8 +73,8 @@ public class GameServiceTests {
     void joinTetNegative() throws DataAccessException {
         JoinGameRequest nullreq = null;
         Assertions.assertThrows(DataAccessException.class, () -> gameService.joinGame(nullreq, "anyString"));
-        AuthData authwhite = authDAO.createAuth("someusernameidk");
-        AuthData authblack = authDAO.createAuth(null);
+        AuthData authwhite = authDAO.createAuthentication("someusernameidk");
+        AuthData authblack = authDAO.createAuthentication(null);
         ChessGame ourGame = new ChessGame();
         GameData game = new GameData(1, null, null, "carlson", ourGame);
         gameDAO.createGame(game);

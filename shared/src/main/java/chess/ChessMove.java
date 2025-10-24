@@ -50,15 +50,27 @@ public class ChessMove {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ChessMove)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ChessMove)) {
+            return false;
+        }
         ChessMove other = (ChessMove) o;
-        if (!this.startPosition.equals(other.startPosition)) return false;
-        if (!this.endPosition.equals(other.endPosition)) return false;
+        if (!this.startPosition.equals(other.startPosition)) {
+            return false;
+        }
+        if (!this.endPosition.equals(other.endPosition)) {
+            return false;
+        }
         if (this.promotionPiece == null) {
-            if (other.promotionPiece != null) return false;
+            if (other.promotionPiece != null) {
+                return false;
+            }
         } else {
-            if (!this.promotionPiece.equals(other.promotionPiece)) return false;
+            if (!this.promotionPiece.equals(other.promotionPiece)) {
+                return false;
+            }
         }
         return true;
     }

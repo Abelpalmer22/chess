@@ -22,8 +22,12 @@ public class ChessGame {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof ChessGame)) return false;
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof ChessGame)) {
+            return false;
+        }
         ChessGame other = (ChessGame) obj;
         return currentTurn == other.currentTurn &&
                 (board != null ? board.equals(other.board) : other.board == null);
@@ -66,11 +70,15 @@ public class ChessGame {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 ChessPiece currPiece = board.squares[i][j];
-                if (currPiece == null) continue;
+                if (currPiece == null) {
+                    continue;
+                }
                 if (currPiece.getTeamColor() == color) {
                     pieces.add(new ChessPosition(i+1,j+1));
                 }
-                else {continue;}
+                else {
+                    continue;
+                }
             }
         }
         return pieces;
@@ -85,7 +93,9 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         ChessPiece piece = board.getPiece(startPosition);
-        if (piece == null) return new ArrayList<>();
+        if (piece == null) {
+            return new ArrayList<>();
+        }
         Collection<ChessMove> candidates = piece.pieceMoves(board, startPosition);
         Collection<ChessMove> validMoves = new ArrayList<>();
         TeamColor color = piece.getTeamColor();
@@ -99,7 +109,9 @@ public class ChessGame {
             ChessPiece movingPiece = fakeBoard.getPiece(startPosition);
             fakeBoard.squares[startRow-1][startCol-1] = null;
             fakeBoard.squares[endRow-1][endCol-1] = movingPiece;
-            if (!inCheck(fakeBoard, color)) validMoves.add(move);
+            if (!inCheck(fakeBoard, color)) {
+                validMoves.add(move);
+            }
         }
         return validMoves;
     }
@@ -116,9 +128,15 @@ public class ChessGame {
         int startRow = startPosition.getRow();
         int startCol = startPosition.getColumn();
         ChessPiece startPiece = board.squares[startRow-1][startCol-1];
-        if (startPiece== null) throw new InvalidMoveException("Invalid move");
-        if (startPiece.getTeamColor() != currentTurn) throw new InvalidMoveException("Invalid move");
-        if (!validMoves(startPosition).contains(move)) throw new InvalidMoveException("Invalid move");
+        if (startPiece== null) {
+            throw new InvalidMoveException("Invalid move");
+        }
+        if (startPiece.getTeamColor() != currentTurn) {
+            throw new InvalidMoveException("Invalid move");
+        }
+        if (!validMoves(startPosition).contains(move)) {
+            throw new InvalidMoveException("Invalid move");
+        }
         ChessPiece piece = board.getPiece(startPosition);
         int r1 = startPosition.getRow();
         int c1 = startPosition.getColumn();
@@ -173,9 +191,13 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        if (!isInCheck(teamColor)) return false;
+        if (!isInCheck(teamColor)) {
+            return false;
+        }
         for (ChessPosition piece : getPieces(board, teamColor)) {
-            if (!validMoves(piece).isEmpty()) return false;
+            if (!validMoves(piece).isEmpty()) {
+                return false;
+            }
         }
         return true;
     }
@@ -188,9 +210,13 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        if (isInCheck(teamColor)) return false;
+        if (isInCheck(teamColor)) {
+            return false;
+        }
         for (ChessPosition piece : getPieces(board, teamColor)) {
-            if (!validMoves(piece).isEmpty()) return false;
+            if (!validMoves(piece).isEmpty()) {
+                return false;
+            }
         }
         return true;
 

@@ -22,10 +22,10 @@ public class ClearServiceTests {
         clearService.clear();
         userDAO.createUser(new UserData("abelpalmer22", "latterdaysaint", "abelpalmer22@gmail.com"));
         GameData fakeGame = gameDAO.createGame(new GameData(1, "abel", "jesse", "wurgie", new ChessGame()));
-        AuthData fakeAuth = authDAO.createAuth("abelpalmer22");
+        AuthData fakeAuth = authDAO.createAuthentication("abelpalmer22");
         clearService.clear();
         Assertions.assertThrows(DataAccessException.class, () -> gameDAO.getGame(1));
-        Assertions.assertThrows(DataAccessException.class, () -> authDAO.getAuth(fakeAuth.authToken()));
+        Assertions.assertThrows(DataAccessException.class, () -> authDAO.getAuthentication(fakeAuth.authToken()));
         Assertions.assertThrows(DataAccessException.class, () -> userDAO.getUser("abelpalmer22"));
     }
 }

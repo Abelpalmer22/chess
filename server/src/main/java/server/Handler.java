@@ -3,8 +3,8 @@ import dataaccess.DataAccessException;
 import service.ClearService;
 import io.javalin.http.Context;
 import com.google.gson.Gson;
-import Requests.*;
-import Results.*;
+import requests.*;
+import results.*;
 import service.GameService;
 import service.UserService;
 import java.util.Map;
@@ -26,10 +26,18 @@ public class Handler {
         String message = e.getMessage();
         if (e instanceof DataAccessException exc) {
             // list all the specs' statuses here
-            if (message.contains("bad request")) status = 400;
-            else if (message.contains("unauthorized")) status = 401;
-            else if (message.contains("already taken")) status = 403;
-            else if (message.contains("forbidden")) status = 403;
+            if (message.contains("bad request")) {
+                status = 400;
+            }
+            else if (message.contains("unauthorized")) {
+                status = 401;
+            }
+            else if (message.contains("already taken")) {
+                status = 403;
+            }
+            else if (message.contains("forbidden")) {
+                status = 403;
+            }
         }
 
         ctx.status(status);
