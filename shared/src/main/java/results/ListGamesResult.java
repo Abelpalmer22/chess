@@ -1,4 +1,4 @@
-package Results;
+package results;
 
 import java.util.Collection;
 import java.util.Objects;
