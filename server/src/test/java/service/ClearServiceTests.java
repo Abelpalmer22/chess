@@ -8,11 +8,8 @@ import dataaccess.MemoryUserDAO;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
-import org.eclipse.jetty.server.Authentication;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import javax.xml.crypto.Data;
 
 public class ClearServiceTests {
     MemoryGameDAO gameDAO = new MemoryGameDAO();

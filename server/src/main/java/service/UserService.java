@@ -1,10 +1,8 @@
 package service;
 
-import Requests.ListGamesRequest;
 import Requests.LoginRequest;
 import Requests.LogoutRequest;
 import Requests.RegisterRequest;
-import Results.ListGamesResult;
 import Results.LoginResult;
 import Results.RegisterResult;
 import dataaccess.AuthDAO;
@@ -13,11 +11,6 @@ import dataaccess.GameDAO;
 import dataaccess.UserDAO;
 import model.AuthData;
 import model.UserData;
-import org.eclipse.jetty.server.Authentication;
-import org.eclipse.jetty.util.log.Log;
-
-import javax.xml.crypto.Data;
-import java.util.List;
 
 public class UserService {
     private final GameDAO gameDAO;

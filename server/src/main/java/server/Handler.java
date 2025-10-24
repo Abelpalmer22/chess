@@ -1,8 +1,5 @@
 package server;
 import dataaccess.DataAccessException;
-import dataaccess.GameDAO;
-import org.eclipse.jetty.server.Authentication;
-import org.eclipse.jetty.util.log.Log;
 import service.ClearService;
 import io.javalin.http.Context;
 import com.google.gson.Gson;
@@ -10,9 +7,6 @@ import Requests.*;
 import Results.*;
 import service.GameService;
 import service.UserService;
-
-import javax.xml.crypto.Data;
-import java.util.List;
 import java.util.Map;
 
 public class Handler {
