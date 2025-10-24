@@ -17,7 +17,7 @@ public class MemoryGameDAO implements GameDAO {
     }
 
     public GameData getGame(int gameID) throws DataAccessException {
-        if (gameData.get(gameID) == null) throw new DataAccessException("game not found");
+        if (gameData.get(gameID) == null) throw new DataAccessException("bad request");
         return gameData.get(gameID);
     }
 

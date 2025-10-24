@@ -21,6 +21,10 @@ public class MemoryUserDAO implements UserDAO {
         return users.get(username);
     }
 
+    public Map<String, UserData> getUsers() {
+        return users;
+    }
+
     public void clear() {
         users.clear();
     }

@@ -18,7 +18,6 @@ public class GameService {
     }
 
     public ListGamesResult listGames(ListGamesRequest r) throws DataAccessException {
-        // validate token
         authDAO.getAuth(r.authToken());
         Collection<GameData> games = gameDAO.listGames();
         return new ListGamesResult(games);
@@ -42,11 +41,7 @@ public class GameService {
         String username = auth.username();
         if (r.playerColor() == null) throw new DataAccessException("bad request");
         GameData game;
-        try {
-            game = gameDAO.getGame(r.gameID());
-        } catch (DataAccessException e) {
-            throw new DataAccessException("bad request");
-        }
+        game = gameDAO.getGame(r.gameID());
         String color = r.playerColor().trim().toUpperCase();
         if ("WHITE".equals(color)) {
             if (game.whiteUsername() != null) throw new DataAccessException("already taken");
