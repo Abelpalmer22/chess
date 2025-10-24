@@ -24,7 +24,6 @@ public class Handler {
     private void handleError(Context ctx, Exception e) {
         int status = 500; // default
         String message = e.getMessage();
-
         if (e instanceof DataAccessException exc) {
             // list all the specs' statuses here
             if (message.contains("bad request")) status = 400;
@@ -34,7 +33,7 @@ public class Handler {
         }
 
         ctx.status(status);
-        ctx.json(Map.of("message", "Error: " + message));
+        ctx.json(Map.of("message", "Error: " + message)); // format wanted by specs
     }
 
 
