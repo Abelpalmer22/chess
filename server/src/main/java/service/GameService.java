@@ -48,10 +48,14 @@ public class GameService {
         game = gameDAO.getGame(r.gameID());
         String color = r.playerColor().trim().toUpperCase();
         if ("WHITE".equals(color)) {
-            if (game.whiteUsername() != null) throw new DataAccessException("already taken");
+            if (game.whiteUsername() != null) {
+                throw new DataAccessException("already taken");
+            }
             game = new GameData(game.gameID(), username, game.blackUsername(), game.gameName(), game.game());
         } else if ("BLACK".equals(color)) {
-            if (game.blackUsername() != null) throw new DataAccessException("already taken");
+            if (game.blackUsername() != null) {
+                throw new DataAccessException("already taken");
+            }
             game = new GameData(game.gameID(), game.whiteUsername(), username, game.gameName(), game.game());
         } else {
             throw new DataAccessException("bad request");
