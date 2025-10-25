@@ -50,8 +50,12 @@ public class ChessPiece {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ChessPiece)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ChessPiece)) {
+            return false;
+        }
         ChessPiece other = (ChessPiece) o;
         return this.pieceColor == other.pieceColor &&
                 this.type == other.type;
@@ -86,14 +90,17 @@ public class ChessPiece {
                 } else if (otherPiece.getTeamColor() != myPiece.getTeamColor()) {
                     moves.add(new ChessMove(myPosition, newPosition, null));
                     break; // cause we killed the piece
-                } else {break;}
+                } else {
+                    break;
+                }
                 r += rowDirections[d];
                 c += colDirections[d];
             }
         }
     }
 
-    private void otherLoop(ChessBoard board, ChessPosition myPosition, ArrayList<ChessMove> moves, ChessPiece myPiece, int[] rowDirections, int[] colDirections) {
+    private void otherLoop(ChessBoard board, ChessPosition myPosition, ArrayList<ChessMove> moves, ChessPiece myPiece,
+                           int[] rowDirections, int[] colDirections) {
         for (int d = 0; d < 8; d++) {
             int r = myPosition.getRow()+rowDirections[d];
             int c = myPosition.getColumn()+colDirections[d];
@@ -113,7 +120,9 @@ public class ChessPiece {
     private Collection<ChessMove> bishopMoves(ChessBoard board, ChessPosition myPosition) {
         ArrayList<ChessMove> moves = new ArrayList<>();
         ChessPiece myPiece = board.getPiece(myPosition);
-        if (myPiece == null) return moves;
+        if (myPiece == null) {
+            return moves;
+        }
         int[] rowDirections = {1, 1, -1, -1};
         int[] colDirections = {1, -1, 1, -1};
         loop(board, myPosition, moves, myPiece, rowDirections, colDirections);
@@ -153,7 +162,8 @@ public class ChessPiece {
             return moves;
         }
         int forwardDirection = (myPiece.pieceColor == ChessGame.TeamColor.WHITE) ? 1 : -1;
-        if ((myPiece.pieceColor == ChessGame.TeamColor.WHITE && currRow == 2) || (myPiece.pieceColor == ChessGame.TeamColor.BLACK && currRow == 7)) {
+        if ((myPiece.pieceColor == ChessGame.TeamColor.WHITE && currRow == 2) ||
+                (myPiece.pieceColor == ChessGame.TeamColor.BLACK && currRow == 7)) {
             ChessPosition singleStepPos = new ChessPosition(currRow+forwardDirection, currCol);
             ChessPiece singlePiece = board.getPiece(singleStepPos);
             ChessPosition doubleStepPos = new ChessPosition(currRow+2*forwardDirection, currCol);

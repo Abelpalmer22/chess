@@ -24,7 +24,8 @@ public class UserService {
     }
 
     public RegisterResult register(RegisterRequest registerRequest)  throws DataAccessException {
-        if (registerRequest.username() == null || registerRequest.password() == null || registerRequest.email() == null) {
+        if (registerRequest.username() == null || registerRequest.password() == null ||
+                registerRequest.email() == null) {
             throw new DataAccessException("bad request");
         }
         try {
@@ -43,7 +44,9 @@ public class UserService {
         }
         try {
             UserData user = userDAO.getUser(req.username());
-            if (!user.password().equals(req.password())) throw new DataAccessException("unauthorized");
+            if (!user.password().equals(req.password())) {
+                throw new DataAccessException("unauthorized");
+            }
         } catch (DataAccessException e) {
             throw new DataAccessException("unauthorized");
         }
