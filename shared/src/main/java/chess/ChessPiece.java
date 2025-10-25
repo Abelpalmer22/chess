@@ -50,12 +50,8 @@ public class ChessPiece {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof ChessPiece)) {
-            return false;
-        }
+        if (this == o) return true;
+        if (!(o instanceof ChessPiece)) return false;
         ChessPiece other = (ChessPiece) o;
         return this.pieceColor == other.pieceColor &&
                 this.type == other.type;
@@ -76,7 +72,7 @@ public class ChessPiece {
      */
 
     private void loop(ChessBoard board, ChessPosition myPosition, ArrayList<ChessMove> moves, ChessPiece myPiece, int[] rowDirections, int[] colDirections) {
-        for (int d = 0; d < 4; d++) {
+        for (int d = 0; d < rowDirections.length; d++) {
             int r = myPosition.getRow()+rowDirections[d];
             int c = myPosition.getColumn()+colDirections[d];
             while (true) {
@@ -90,11 +86,26 @@ public class ChessPiece {
                 } else if (otherPiece.getTeamColor() != myPiece.getTeamColor()) {
                     moves.add(new ChessMove(myPosition, newPosition, null));
                     break; // cause we killed the piece
-                } else {
-                    break;
-                }
+                } else {break;}
                 r += rowDirections[d];
                 c += colDirections[d];
+            }
+        }
+    }
+
+    private void otherLoop(ChessBoard board, ChessPosition myPosition, ArrayList<ChessMove> moves, ChessPiece myPiece, int[] rowDirections, int[] colDirections) {
+        for (int d = 0; d < 8; d++) {
+            int r = myPosition.getRow()+rowDirections[d];
+            int c = myPosition.getColumn()+colDirections[d];
+            ChessPosition newPosition = new ChessPosition(r, c);
+            ChessPiece otherPiece = board.getPiece(newPosition);
+            if (r < 1 || r > 8 || c < 1 || c > 8) {
+                continue;
+            }
+            if (otherPiece == null) {
+                moves.add(new ChessMove(myPosition, newPosition, null));
+            } else if (otherPiece.getTeamColor() != myPiece.getTeamColor()) {
+                moves.add(new ChessMove(myPosition, newPosition, null));
             }
         }
     }
@@ -110,52 +121,26 @@ public class ChessPiece {
     }
 
     private Collection<ChessMove> kingMoves(ChessBoard board, ChessPosition myPosition) {
-        List<ChessMove> moves = new ArrayList<>();
+        ArrayList<ChessMove> moves = new ArrayList<>();
         ChessPiece myPiece = board.getPiece(myPosition);
         if (myPiece == null) {
             return moves;
         }
         int[] rowDirections = {1, 1, 0, -1, -1, -1, 0, 1};
         int[] colDirections = {0, 1, 1, 1, 0, -1, -1, -1};
-        for (int d = 0; d < 8; d++) {
-            int r = myPosition.getRow()+rowDirections[d];
-            int c = myPosition.getColumn()+colDirections[d];
-            ChessPosition newPosition = new ChessPosition(r, c);
-            ChessPiece otherPiece = board.getPiece(newPosition);
-            if (r < 1 || r > 8 || c < 1 || c > 8) {
-                continue;
-            }
-            if (otherPiece == null) {
-                moves.add(new ChessMove(myPosition, newPosition, null));
-            } else if (otherPiece.getTeamColor() != myPiece.getTeamColor()) {
-                moves.add(new ChessMove(myPosition, newPosition, null));
-            }
-        }
+        otherLoop(board, myPosition, moves, myPiece, rowDirections, colDirections);
         return moves;
     }
 
     private Collection<ChessMove> knightMoves(ChessBoard board, ChessPosition myPosition) {
-        List<ChessMove> moves = new ArrayList<>();
+        ArrayList<ChessMove> moves = new ArrayList<>();
         ChessPiece myPiece = board.getPiece(myPosition);
         if (myPiece == null) {
             return moves;
         }
         int[] rowDirections = {2, 1, -1, -2, -2, -1, 1, 2};
         int[] colDirections = {1, 2, 2, 1, -1, -2, -2, -1};
-        for (int d = 0; d < 8; d++) {
-            int r = myPosition.getRow()+rowDirections[d];
-            int c = myPosition.getColumn()+colDirections[d];
-            ChessPosition newPosition = new ChessPosition(r, c);
-            ChessPiece otherPiece = board.getPiece(newPosition);
-            if (r < 1 || r > 8 || c < 1 || c > 8) {
-                continue;
-            }
-            if (otherPiece == null) {
-                moves.add(new ChessMove(myPosition, newPosition, null));
-            } else if (otherPiece.getTeamColor() != myPiece.getTeamColor()) {
-                moves.add(new ChessMove(myPosition, newPosition, null));
-            }
-        }
+        otherLoop(board, myPosition, moves, myPiece, rowDirections, colDirections);
         return moves;
     }
 
@@ -229,7 +214,7 @@ public class ChessPiece {
     }
 
     private Collection<ChessMove> queenMoves(ChessBoard board, ChessPosition myPosition) {
-        List<ChessMove> moves = new ArrayList<>();
+        ArrayList<ChessMove> moves = new ArrayList<>();
         ChessPiece myPiece = board.getPiece(myPosition);
         if (myPiece == null) {
             return moves;
@@ -237,25 +222,7 @@ public class ChessPiece {
         int[] rowDirections = {1, 1, 0, -1, -1, -1, 0, 1};
         int[] colDirections = {0, 1, 1, 1, 0, -1, -1, -1};
 
-        for (int d = 0; d < 8; d++) {
-            int r = myPosition.getRow()+rowDirections[d];
-            int c = myPosition.getColumn()+colDirections[d];
-            while (true) {
-                ChessPosition newPosition = new ChessPosition(r, c);
-                ChessPiece otherPiece = board.getPiece(newPosition);
-                if (r < 1 || r > 8 || c < 1 || c > 8) {
-                    break;
-                }
-                if (otherPiece == null) {
-                    moves.add(new ChessMove(myPosition, newPosition, null));
-                } else if (otherPiece.getTeamColor() != myPiece.getTeamColor()) {
-                    moves.add(new ChessMove(myPosition, newPosition, null));
-                    break; // cause we killed the piece
-                } else {break;}
-                r += rowDirections[d];
-                c += colDirections[d];
-            }
-        }
+        loop(board, myPosition, moves, myPiece, rowDirections, colDirections);
         return moves;
     }
 
