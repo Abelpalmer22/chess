@@ -75,7 +75,8 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
 
-    private void loop(ChessBoard board, ChessPosition myPosition, ArrayList<ChessMove> moves, ChessPiece myPiece, int[] rowDirections, int[] colDirections) {
+    private void loop(ChessBoard board, ChessPosition myPosition, ArrayList<ChessMove> moves, ChessPiece myPiece,
+                      int[] rowDirections, int[] colDirections) {
         for (int d = 0; d < rowDirections.length; d++) {
             int r = myPosition.getRow()+rowDirections[d];
             int c = myPosition.getColumn()+colDirections[d];
@@ -182,8 +183,9 @@ public class ChessPiece {
                         PieceType.QUEEN,
                         PieceType.ROOK,
                         PieceType.BISHOP,
-                        PieceType.KNIGHT })
+                        PieceType.KNIGHT }) {
                     moves.add(new ChessMove(myPosition, nonCapturingPosition, promotion));
+                }
             }
             else {
                 moves.add(new ChessMove(myPosition, nonCapturingPosition, null));
@@ -204,8 +206,9 @@ public class ChessPiece {
                             PieceType.QUEEN,
                             PieceType.ROOK,
                             PieceType.BISHOP,
-                            PieceType.KNIGHT })
+                            PieceType.KNIGHT }) {
                         moves.add(new ChessMove(myPosition, capturingPosition, promotion));
+                    }
                 }
                 else {
                     moves.add(new ChessMove(myPosition, capturingPosition, null));
