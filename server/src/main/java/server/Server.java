@@ -6,6 +6,8 @@ import service.ClearService;
 import service.GameService;
 import service.UserService;
 
+import javax.xml.crypto.Data;
+
 public class Server {
 
     private final Javalin javalin;
@@ -16,9 +18,18 @@ public class Server {
             config.jsonMapper(new JavalinGson());
         });
 
-        var userDAO = new MemoryUserDAO();
-        var gameDAO = new MemoryGameDAO();
-        var authDAO = new MemoryAuthDAO();
+        try {
+            DatabaseManager.createDatabase();
+            MySqlUserDAO.createTable();
+            MySqlAuthDAO.createTable();
+            MySqlGameDAO.createTable();
+        } catch (DataAccessException e) {
+            throw new RuntimeException("Database initialization failed", e);
+        }
+
+        var userDAO = new MySqlUserDAO();
+        var gameDAO = new MySqlGameDAO();
+        var authDAO = new MySqlAuthDAO();
 
         // Register your endpoints and exception handlers here.
         ClearService clearService = new ClearService(userDAO, gameDAO, authDAO);

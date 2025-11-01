@@ -32,15 +32,15 @@ public class MemoryGameDAO implements GameDAO {
         gameData.put(game.gameID(), game);
     }
 
-    public Collection<GameData> listGames() {
+    public Collection<GameData> listGames() throws DataAccessException {
         return gameData.values();
     }
 
-    public int makeNewID() {
+    public int makeNewID() throws DataAccessException {
         return gameID++;
     }
 
-    public void clear() {
+    public void clear() throws DataAccessException {
         gameData.clear();
     }
 }

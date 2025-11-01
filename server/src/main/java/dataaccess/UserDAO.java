@@ -8,6 +8,5 @@ import java.util.Map;
 public interface UserDAO {
     public void createUser(UserData user) throws DataAccessException;
     public UserData getUser(String username) throws DataAccessException;
-    public Map<String, UserData> getUsers();
-    public void clear();
+    public void clear() throws DataAccessException;
 }
