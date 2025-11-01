@@ -49,11 +49,11 @@ public class Handler {
         try {
             clearService.clear();
             ctx.status(200);
-        } catch (Exception e) {
-            ctx.status(500);
-            ctx.result("{\"message\":\"Error: " + e.getMessage() + "\"}");
+        } catch (DataAccessException e) {
+            handleError(ctx, e);
         }
     }
+
 
     public void register(Context ctx) {
         try {

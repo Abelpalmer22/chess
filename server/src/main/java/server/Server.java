@@ -24,7 +24,7 @@ public class Server {
             MySqlAuthDAO.createTable();
             MySqlGameDAO.createTable();
         } catch (DataAccessException e) {
-            throw new RuntimeException("Database initialization failed", e);
+            throw new RuntimeException(e);
         }
 
         var userDAO = new MySqlUserDAO();

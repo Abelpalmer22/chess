@@ -6,6 +6,10 @@ import java.util.UUID;
 
 public class MySqlAuthDAO implements AuthDAO {
     public static void createTable() throws DataAccessException {
+        System.out.println(">>> MySqlUserDAO.createUser()");
+        System.out.println(">>> MySqlAuthDAO.createAuthentication()");
+        System.out.println(">>> MySqlGameDAO.createGame()");
+
         try (var conn = DatabaseManager.getConnection();
              var stmt = conn.createStatement()) {
             stmt.executeUpdate("""
@@ -56,7 +60,7 @@ public class MySqlAuthDAO implements AuthDAO {
                 if (rs.next()) {
                     return new AuthData(rs.getString("token"), rs.getString("username"));
                 } else {
-                    throw new DataAccessException("Auth token not found");
+                    throw new DataAccessException("unauthorized");
                 }
             }
         } catch (SQLException e) {

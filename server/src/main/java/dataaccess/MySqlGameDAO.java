@@ -40,6 +40,10 @@ public class MySqlGameDAO implements GameDAO {
 
     @Override
     public GameData createGame(GameData game) throws DataAccessException {
+        System.out.println(">>> MySqlUserDAO.createUser()");
+        System.out.println(">>> MySqlAuthDAO.createAuthentication()");
+        System.out.println(">>> MySqlGameDAO.createGame()");
+
         var sql = "INSERT INTO game (id, whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?, ?)";
         try (var conn = DatabaseManager.getConnection();
              var stmt = conn.prepareStatement(sql)) {
@@ -53,6 +57,14 @@ public class MySqlGameDAO implements GameDAO {
             stmt.setString(5, json);
 
             stmt.executeUpdate();
+            System.out.println(">>> MySqlGameDAO.createGame() finished; verifying row count...");
+            try (var checkStmt = conn.prepareStatement("SELECT COUNT(*) AS count FROM game");
+                 var rs = checkStmt.executeQuery()) {
+                if (rs.next()) {
+                    System.out.println(">>> Row count in-game table now: " + rs.getInt("count"));
+                }
+            }
+
             return game;
 
         } catch (SQLException e) {
