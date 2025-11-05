@@ -59,7 +59,8 @@ public class MySqlUserDAO implements UserDAO {
             stmt.setString(1, username);
             try (var rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    return new UserData(rs.getString("username"), rs.getString("password_hash"), rs.getString("email"));
+                    return new UserData(rs.getString("username"), rs.getString("password_hash"),
+                            rs.getString("email"));
                 }
                 throw new DataAccessException("unauthorized");
             }

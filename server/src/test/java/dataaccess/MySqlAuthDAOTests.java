@@ -59,7 +59,8 @@ public class MySqlAuthDAOTests {
 
     @Test
     public void getAuthNegative() throws DataAccessException {
-        assertThrows(DataAccessException.class, () -> authDAO.getAuthentication("random"), "shouldn't work");
+        assertThrows(DataAccessException.class, () -> authDAO.getAuthentication("random"),
+                "shouldn't work");
     }
 
     @Test

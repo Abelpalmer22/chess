@@ -94,8 +94,8 @@ public class MySqlGameDAO implements GameDAO {
     @Override
     public void updateGame(GameData game) throws DataAccessException {
         var sql = """
-            UPDATE game SET whiteUsername=?, blackUsername=?, gameName=?, game=? WHERE id=?
-        """;
+                UPDATE game SET whiteUsername=?, blackUsername=?, gameName=?, game=? WHERE id=?
+                """;
         try (var conn = DatabaseManager.getConnection();
              var stmt = conn.prepareStatement(sql)) {
 
