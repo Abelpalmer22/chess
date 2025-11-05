@@ -14,7 +14,7 @@ public class MySqlUserDAOTests {
 
     @BeforeAll
     public static void init() throws DataAccessException {
-        // Create DB and tables once before all tests
+
         DatabaseManager.createDatabase();
         MySqlUserDAO.createTable();
         MySqlAuthDAO.createTable();
@@ -27,7 +27,7 @@ public class MySqlUserDAOTests {
 
     @BeforeEach
     public void clearDatabase() throws DataAccessException {
-        // Wipe all tables before each test to ensure isolation
+
         userDAO.clear();
         authDAO.clear();
         gameDAO.clear();

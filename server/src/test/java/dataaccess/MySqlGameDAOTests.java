@@ -15,12 +15,11 @@ public class MySqlGameDAOTests {
 
     @BeforeAll
     public static void init() throws DataAccessException {
-        // Create DB and tables once before all tests
+        // Create DB and tables once before tests
         DatabaseManager.createDatabase();
         MySqlUserDAO.createTable();
         MySqlAuthDAO.createTable();
         MySqlGameDAO.createTable();
-
         userDAO = new MySqlUserDAO();
         authDAO = new MySqlAuthDAO();
         gameDAO = new MySqlGameDAO();
@@ -28,7 +27,6 @@ public class MySqlGameDAOTests {
 
     @BeforeEach
     public void clearDatabase() throws DataAccessException {
-        // Wipe all tables before each test to ensure isolation
         userDAO.clear();
         authDAO.clear();
         gameDAO.clear();
