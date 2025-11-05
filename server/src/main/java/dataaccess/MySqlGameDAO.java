@@ -40,10 +40,6 @@ public class MySqlGameDAO implements GameDAO {
 
     @Override
     public GameData createGame(GameData game) throws DataAccessException {
-        System.out.println(">>> MySqlUserDAO.createUser()");
-        System.out.println(">>> MySqlAuthDAO.createAuthentication()");
-        System.out.println(">>> MySqlGameDAO.createGame()");
-
         var sql = "INSERT INTO game (id, whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?, ?)";
         try (var conn = DatabaseManager.getConnection();
              var stmt = conn.prepareStatement(sql)) {
