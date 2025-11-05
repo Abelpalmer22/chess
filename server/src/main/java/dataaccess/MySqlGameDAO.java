@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class MySqlGameDAO implements GameDAO {
-    private static final Gson gson = new Gson();
+    private static final Gson GSON = new Gson();
 
     public static void createTable() throws DataAccessException {
         try (var conn = DatabaseManager.getConnection();
@@ -49,7 +49,7 @@ public class MySqlGameDAO implements GameDAO {
             stmt.setString(3, game.blackUsername());
             stmt.setString(4, game.gameName());
 
-            String json = gson.toJson(game.game());
+            String json = GSON.toJson(game.game());
             stmt.setString(5, json);
 
             stmt.executeUpdate();
@@ -80,7 +80,7 @@ public class MySqlGameDAO implements GameDAO {
                     var black = rs.getString("blackUsername");
                     var name = rs.getString("gameName");
                     var json = rs.getString("game");
-                    var chessGame = gson.fromJson(json, ChessGame.class);
+                    var chessGame = GSON.fromJson(json, ChessGame.class);
                     return new GameData(gameID, white, black, name, chessGame);
                 } else {
                     throw new DataAccessException("bad request");
@@ -102,7 +102,7 @@ public class MySqlGameDAO implements GameDAO {
             stmt.setString(1, game.whiteUsername());
             stmt.setString(2, game.blackUsername());
             stmt.setString(3, game.gameName());
-            stmt.setString(4, gson.toJson(game.game()));
+            stmt.setString(4, GSON.toJson(game.game()));
             stmt.setInt(5, game.gameID());
 
             int affected = stmt.executeUpdate();
@@ -129,7 +129,7 @@ public class MySqlGameDAO implements GameDAO {
                 var white = rs.getString("whiteUsername");
                 var black = rs.getString("blackUsername");
                 var name = rs.getString("gameName");
-                var chess = gson.fromJson(rs.getString("game"), ChessGame.class);
+                var chess = GSON.fromJson(rs.getString("game"), ChessGame.class);
                 games.add(new GameData(id, white, black, name, chess));
             }
 

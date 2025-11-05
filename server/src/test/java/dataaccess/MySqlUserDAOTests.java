@@ -8,9 +8,9 @@ import java.util.Collection;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlUserDAOTests {
-    static MySqlUserDAO userDAO;
-    static MySqlAuthDAO authDAO;
     static MySqlGameDAO gameDAO;
+    static MySqlAuthDAO authDAO;
+    static MySqlUserDAO userDAO;
 
     @BeforeAll
     public static void init() throws DataAccessException {
