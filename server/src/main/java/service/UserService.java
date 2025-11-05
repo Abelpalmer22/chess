@@ -32,7 +32,8 @@ public class UserService {
         try {
             UserData user = userDAO.getUser(registerRequest.username());
         } catch (DataAccessException e) {
-            userDAO.createUser(new UserData(registerRequest.username(), BCrypt.hashpw(registerRequest.password(), BCrypt.gensalt()), registerRequest.email()));
+            userDAO.createUser(new UserData(registerRequest.username(), BCrypt.hashpw(registerRequest.password(),
+                    BCrypt.gensalt()), registerRequest.email()));
             AuthData newAuth = authDAO.createAuthentication(registerRequest.username());
             return new RegisterResult(registerRequest.username(), newAuth.authToken());
         }
