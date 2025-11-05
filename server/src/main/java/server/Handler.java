@@ -41,7 +41,7 @@ public class Handler {
         }
 
         ctx.status(status);
-        ctx.json(Map.of("message", "Error: " + message)); // format wanted by specs
+        ctx.json(serializer.toJson(Map.of("message", "Error: " + message))); // format wanted by specs
     }
 
 
@@ -59,7 +59,7 @@ public class Handler {
         try {
             RegisterRequest req = serializer.fromJson(ctx.body(), RegisterRequest.class);
             RegisterResult result = userService.register(req);
-            ctx.status(200).json(result);
+            ctx.status(200).json(serializer.toJson(result));
         } catch (DataAccessException e) {
             handleError(ctx, e);
         }
@@ -69,7 +69,7 @@ public class Handler {
         try {
             LoginRequest req = serializer.fromJson(ctx.body(), LoginRequest.class);
             LoginResult result = userService.login(req);
-            ctx.status(200).json(result);
+            ctx.status(200).json(serializer.toJson(result));
         } catch (DataAccessException e) {
             handleError(ctx, e);
         }
@@ -91,7 +91,7 @@ public class Handler {
             String authToken = cts.header("Authorization");
             ListGamesRequest req = new ListGamesRequest(authToken);
             ListGamesResult result = gameService.listGames(req);
-            cts.status(200).json(result);
+            cts.status(200).json(serializer.toJson(result));
         } catch (DataAccessException e) {
             handleError(cts, e);
         }
@@ -102,7 +102,7 @@ public class Handler {
             String authToken = ctx.header("Authorization");
             CreateGameRequest req = serializer.fromJson(ctx.body(), CreateGameRequest.class);
             CreateGameResult result = gameService.createGame(req, authToken);
-            ctx.status(200).json(result);
+            ctx.status(200).json(serializer.toJson(result));
         } catch (DataAccessException e) {
             handleError(ctx, e);
         }
@@ -113,7 +113,7 @@ public class Handler {
             String authToken = ctx.header("Authorization");
             JoinGameRequest req = serializer.fromJson(ctx.body(), JoinGameRequest.class);
             JoinGameResult result = gameService.joinGame(req, authToken);
-            ctx.status(200).json(result);
+            ctx.status(200).json(serializer.toJson(result));
         } catch (DataAccessException e) {
             handleError(ctx, e);
         }

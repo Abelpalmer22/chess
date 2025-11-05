@@ -63,7 +63,7 @@ public class MySqlUserDAO implements UserDAO {
                 if (rs.next()) {
                     return new UserData(rs.getString("username"), rs.getString("password_hash"), rs.getString("email"));
                 }
-                throw new DataAccessException("User not found");
+                throw new DataAccessException("unauthorized");
             }
         } catch (SQLException e) {
             throw new DataAccessException("Unable to read user", e);
