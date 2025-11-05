@@ -40,10 +40,8 @@ public class MySqlUserDAO implements UserDAO {
         try (var conn = DatabaseManager.getConnection();
              var stmt = conn.prepareStatement(sql)) {
 
-            String hashedPassword = BCrypt.hashpw(user.password(), BCrypt.gensalt());
-
             stmt.setString(1, user.username());
-            stmt.setString(2, hashedPassword);
+            stmt.setString(2, user.password());
             stmt.setString(3, user.email());
             stmt.executeUpdate();
 
