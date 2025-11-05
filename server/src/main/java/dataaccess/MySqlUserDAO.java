@@ -24,7 +24,7 @@ public class MySqlUserDAO implements UserDAO {
 
     @Override
     public void clear() throws DataAccessException {
-        try (var conn = DatabaseManager.getConnection(); var stmt = conn.prepareStatement("DELETE FROM user")) {
+        try (var conn = DatabaseManager.getConnection(); var stmt = conn.prepareStatement("TRUNCATE TABLE user")) {
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new DataAccessException("Unable to clear user table", e);
@@ -33,9 +33,6 @@ public class MySqlUserDAO implements UserDAO {
 
     @Override
     public void createUser(UserData user) throws DataAccessException {
-        System.out.println(">>> MySqlUserDAO.createUser()");
-        System.out.println(">>> MySqlAuthDAO.createAuthentication()");
-        System.out.println(">>> MySqlGameDAO.createGame()");
 
         System.out.println(">>> MySqlUserDAO.createUser() called for " + user.username());
 
@@ -73,3 +70,5 @@ public class MySqlUserDAO implements UserDAO {
         }
     }
 }
+
+

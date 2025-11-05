@@ -6,9 +6,6 @@ import java.util.UUID;
 
 public class MySqlAuthDAO implements AuthDAO {
     public static void createTable() throws DataAccessException {
-        System.out.println(">>> MySqlUserDAO.createUser()");
-        System.out.println(">>> MySqlAuthDAO.createAuthentication()");
-        System.out.println(">>> MySqlGameDAO.createGame()");
 
         try (var conn = DatabaseManager.getConnection();
              var stmt = conn.createStatement()) {
@@ -26,7 +23,7 @@ public class MySqlAuthDAO implements AuthDAO {
     @Override
     public void clear() throws DataAccessException {
         try (var conn = DatabaseManager.getConnection();
-             var stmt = conn.prepareStatement("DELETE FROM auth")) {
+             var stmt = conn.prepareStatement("TRUNCATE TABLE auth")) {
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new DataAccessException("Unable to clear auth table", e);
@@ -83,3 +80,5 @@ public class MySqlAuthDAO implements AuthDAO {
         }
     }
 }
+
+
