@@ -1,11 +1,8 @@
 package dataaccess;
 
 import model.UserData;
-import org.eclipse.jetty.server.Authentication;
 
-import javax.xml.crypto.Data;
 import java.sql.SQLException;
-import org.mindrot.jbcrypt.BCrypt;
 
 public class MySqlUserDAO implements UserDAO {
     public static void createTable() throws DataAccessException {
