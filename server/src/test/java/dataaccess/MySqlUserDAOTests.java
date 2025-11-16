@@ -1,10 +1,7 @@
 package dataaccess;
-import chess.ChessGame;
 import model.*;
 import org.junit.jupiter.api.*;
 
-import javax.xml.crypto.Data;
-import java.util.Collection;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlUserDAOTests {

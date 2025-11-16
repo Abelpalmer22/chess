@@ -14,7 +14,7 @@ public class MySqlAuthDAOTests {
 
     @BeforeAll
     public static void init() throws DataAccessException {
-        // Create database and tables once before all tests
+        // Create database and tables once before tets
         DatabaseManager.createDatabase();
         MySqlUserDAO.createTable();
         MySqlAuthDAO.createTable();

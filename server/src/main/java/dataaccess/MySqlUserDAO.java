@@ -30,9 +30,6 @@ public class MySqlUserDAO implements UserDAO {
 
     @Override
     public void createUser(UserData user) throws DataAccessException {
-
-        System.out.println(">>> MySqlUserDAO.createUser() called for " + user.username());
-
         var sql = "INSERT INTO user (username, password_hash, email) VALUES (?, ?, ?)";
         try (var conn = DatabaseManager.getConnection();
              var stmt = conn.prepareStatement(sql)) {
