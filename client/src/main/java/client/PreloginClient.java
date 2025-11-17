@@ -3,6 +3,7 @@ package client;
 import requests.LoginRequest;
 import requests.RegisterRequest;
 import results.LoginResult;
+import results.RegisterResult;
 
 public class PreloginClient implements ClientMode {
     public String prompt() {

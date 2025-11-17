@@ -12,7 +12,7 @@ public class Repl {
     }
 
     public void run() {
-        System.out.println("Welcome to 240 Chess");
+        System.out.println("Welcome to the chess app. Please login to continue");
 
         while (true) {
             System.out.print(mode.prompt());

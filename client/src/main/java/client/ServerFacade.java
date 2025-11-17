@@ -76,6 +76,9 @@ public class ServerFacade {
         if (json.contains("forbidden")) throw new RuntimeException("forbidden");
         if (json.contains("bad request")) throw new RuntimeException("bad request");
 
+
+
+
         throw new RuntimeException("request failed");
     }
 
