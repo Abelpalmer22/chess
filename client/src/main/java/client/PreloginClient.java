@@ -2,10 +2,11 @@ package client;
 
 import requests.LoginRequest;
 import requests.RegisterRequest;
+import results.LoginResult;
 
 public class PreloginClient implements ClientMode {
     public String prompt() {
-        return "[not logged in] >>> ";
+        return "[LOGGED OUT] >>> ";
     }
 
     public String eval(String input, ServerFacade server) {
@@ -24,15 +25,15 @@ public class PreloginClient implements ClientMode {
         }
         if (cmd.equals("register")) {
             if (t.length < 4) {return "correct usage: register <username> <password> <email>";}
-            var req = new RegisterRequest(t[1], t[2], t[3]);
+            RegisterRequest req = new RegisterRequest(t[1], t[2], t[3]);
             server.register(req);
             return "registered " + t[1];
         }
 
         if (cmd.equals("login")) {
             if (t.length < 3) {return "correct usage: login <username> <password>";}
-            var req = new LoginRequest(t[1], t[2]);
-            var res = server.login(req);
+            LoginRequest req = new LoginRequest(t[1], t[2]);
+            LoginResult res = server.login(req);
             return "__LOBBY__ " + res.authToken();
         }
 
