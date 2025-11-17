@@ -23,14 +23,14 @@ public class PreloginClient implements ClientMode {
                     """;
         }
         if (cmd.equals("register")) {
-            if (t.length < 4) {return "usage: register <username> <password> <email>";}
+            if (t.length < 4) {return "correct usage: register <username> <password> <email>";}
             var req = new RegisterRequest(t[1], t[2], t[3]);
             server.register(req);
             return "registered " + t[1];
         }
 
         if (cmd.equals("login")) {
-            if (t.length < 3) {return "usage: login <username> <password>";}
+            if (t.length < 3) {return "correct usage: login <username> <password>";}
             var req = new LoginRequest(t[1], t[2]);
             var res = server.login(req);
             return "__LOBBY__ " + res.authToken();

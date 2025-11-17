@@ -20,31 +20,31 @@ public class ServerFacade {
         this.baseUrl = baseUrl;
     }
 
-    public RegisterResult register(RegisterRequest req) throws Exception {
+    public RegisterResult register(RegisterRequest req) throws RuntimeException {
         return send("POST", "/user", req, null, RegisterResult.class);
     }
 
-    public LoginResult login(LoginRequest req) throws Exception {
+    public LoginResult login(LoginRequest req) throws RuntimeException {
         return send("POST", "/session", req, null, LoginResult.class);
     }
 
-    public void logout(String authToken) throws Exception {
+    public void logout(String authToken) throws RuntimeException {
         send("DELETE", "/session", null, authToken, Void.class);
     }
 
-    public ListGamesResult listGames(String authToken) throws Exception {
+    public ListGamesResult listGames(String authToken) throws RuntimeException {
         return send("GET", "/game", null, authToken, ListGamesResult.class);
     }
 
-    public CreateGameResult createGame(CreateGameRequest req, String authToken) throws Exception {
+    public CreateGameResult createGame(CreateGameRequest req, String authToken) throws RuntimeException {
         return send("POST", "/game", req, authToken, CreateGameResult.class);
     }
 
-    public JoinGameResult joinGame(JoinGameRequest req, String authToken) throws Exception {
+    public JoinGameResult joinGame(JoinGameRequest req, String authToken) throws RuntimeException {
         return send("PUT", "/game", req, authToken, JoinGameResult.class);
     }
 
-    private <T> T send(String method, String path, Object body, String token, Class<T> type) throws Exception {
+    private <T> T send(String method, String path, Object body, String token, Class<T> type) {
         var url = baseUrl + path;
         var builder = HttpRequest.newBuilder().uri(URI.create(url));
 
@@ -56,7 +56,13 @@ public class ServerFacade {
             builder.method(method, HttpRequest.BodyPublishers.noBody());
         }
 
-        var response = client.send(builder.build(), HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response;
+        try {
+            response = client.send(builder.build(), HttpResponse.BodyHandlers.ofString());
+        } catch (Exception e) {
+            throw new RuntimeException("connection failed");
+        }
+
         var code = response.statusCode();
         var json = response.body();
 
@@ -65,11 +71,12 @@ public class ServerFacade {
             return gson.fromJson(json, type);
         }
 
-        if (json.contains("already taken")) throw new Exception("already taken");
-        if (json.contains("unauthorized")) throw new Exception("unauthorized");
-        if (json.contains("forbidden")) throw new Exception("forbidden");
-        if (json.contains("bad request")) throw new Exception("bad request");
+        if (json.contains("already taken")) throw new RuntimeException("already taken");
+        if (json.contains("unauthorized")) throw new RuntimeException("unauthorized");
+        if (json.contains("forbidden")) throw new RuntimeException("forbidden");
+        if (json.contains("bad request")) throw new RuntimeException("bad request");
 
-        throw new Exception("request failed");
+        throw new RuntimeException("request failed");
     }
+
 }
