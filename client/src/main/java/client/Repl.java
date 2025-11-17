@@ -40,6 +40,14 @@ public class Repl {
                 continue;
             }
 
+            if (result.startsWith("__OBSERVE__")) {
+                var parts = result.split("\\s+");
+                var token = parts[1];
+                var gameID = Integer.parseInt(parts[2]);
+                mode = new InGameClient(token, gameID, true); // true = observer mode
+                continue;
+            }
+
             System.out.println(result);
         }
     }

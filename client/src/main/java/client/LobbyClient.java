@@ -26,6 +26,7 @@ public class LobbyClient implements ClientMode {
                 list
                 create
                 play
+                observe
                 logout
                 quit
                 """;
@@ -56,6 +57,17 @@ public class LobbyClient implements ClientMode {
             var req = new JoinGameRequest(t[2], id);
             server.joinGame(req, authToken);
             return "__GAME__ " + authToken + " " + id;
+        }
+
+        if (cmd.equals("observe")) {
+            if (t.length < 2) {
+                return "usage: observe <gameID>";
+            }
+            int id = Integer.parseInt(t[1]);
+            var req = new JoinGameRequest(null, id);
+            server.joinGame(req, authToken);
+            return "__OBSERVE__" + authToken + " " + id;
+
         }
 
         return "unknown command";

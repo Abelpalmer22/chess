@@ -3,10 +3,17 @@ package client;
 public class InGameClient implements ClientMode {
     private final String authToken;
     private final int gameID;
+    private final boolean observer;
 
     public InGameClient(String authToken, int gameID) {
+        this(authToken, gameID, false);
+    }
+
+    public InGameClient(String authToken, int gameID, boolean observer) {
         this.authToken = authToken;
         this.gameID = gameID;
+        this.observer = observer;
+
     }
 
     public String prompt() {
