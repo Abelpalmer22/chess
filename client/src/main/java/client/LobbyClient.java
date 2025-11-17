@@ -1,5 +1,6 @@
 package client;
 
+import model.GameData;
 import requests.CreateGameRequest;
 import requests.JoinGameRequest;
 
@@ -23,8 +24,8 @@ public class LobbyClient implements ClientMode {
         if (cmd.equals("help")) return """
                 Commands:
                 list
-                create <gameName>
-                join <gameID> <WHITE|BLACK|OBSERVER>
+                create
+                play
                 logout
                 quit
                 """;
@@ -35,7 +36,11 @@ public class LobbyClient implements ClientMode {
 
         if (cmd.equals("list")) {
             var res = server.listGames(authToken);
-            return res.toString();
+            String gamesList = "";
+            for (GameData game: res.games()) {
+                gamesList += game.gameName() + " " + game.whiteUsername() + " " + game.blackUsername() + "\n";
+            }
+            return gamesList;
         }
 
         if (cmd.equals("create")) {
@@ -45,8 +50,8 @@ public class LobbyClient implements ClientMode {
             return "created game " + res.gameID();
         }
 
-        if (cmd.equals("join")) {
-            if (t.length < 3) return "usage: join <gameID> <WHITE|BLACK|OBSERVER>";
+        if (cmd.equals("play")) {
+            if (t.length < 3) return "usage: play <gameID> <WHITE|BLACK>";
             int id = Integer.parseInt(t[1]);
             var req = new JoinGameRequest(t[2], id);
             server.joinGame(req, authToken);
