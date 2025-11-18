@@ -28,6 +28,10 @@ public class Repl {
             }
 
             if (result.equals("__QUIT__")) return;
+            if (result.equals("__LOGGED_OUT__")) {
+                mode = new PreloginClient(state);
+                continue;
+            }
             if (result.equals("__LOBBY__")) {
                 mode = new LobbyClient(state);
                 continue;

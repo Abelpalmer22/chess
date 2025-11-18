@@ -35,8 +35,9 @@ public class LobbyClient implements ClientMode {
         if (cmd.equals("quit")) return "__QUIT__";
 
         if (cmd.equals("logout")) {
+            server.logout(state.getAuthToken());
             state.setAuthToken(null);
-            return "__LOBBY__";
+            return "__LOGGED_OUT__";
         }
 
         if (cmd.equals("list")) {

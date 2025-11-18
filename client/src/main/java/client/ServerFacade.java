@@ -41,12 +41,8 @@ public class ServerFacade {
         return send("POST", "/game", req, authToken, CreateGameResult.class);
     }
 
-    public JoinGameResult joinGame(JoinGameRequest req, String authToken) throws RuntimeException {
-        return send("PUT", "/game", req, authToken, JoinGameResult.class);
-    }
-
-    public GameData getGame(int gameID, String token) {
-        return send("GET", "/game/" + gameID, null, token, GameData.class);
+    public void joinGame(JoinGameRequest req, String authToken) throws RuntimeException {
+        send("PUT", "/game", req, authToken, JoinGameResult.class);
     }
 
 

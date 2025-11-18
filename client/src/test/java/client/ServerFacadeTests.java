@@ -1,29 +1,25 @@
 package client;
 
 import org.junit.jupiter.api.*;
+import requests.RegisterRequest;
 import server.Server;
-
 
 public class ServerFacadeTests {
 
     private static Server server;
+    private static String baseURL;
 
     @BeforeAll
     public static void init() {
         server = new Server();
-        var port = server.run(0);
-        System.out.println("Started test HTTP server on " + port);
+        int port = server.run(0);
+        baseURL = "http://localhost:" + port;
+        System.out.println("Started test HTTP server on port " + port);
     }
 
     @AfterAll
-    static void stopServer() {
+    public static void stopServer() {
         server.stop();
-    }
-
-
-    @Test
-    public void sampleTest() {
-        Assertions.assertTrue(true);
     }
 
 }
