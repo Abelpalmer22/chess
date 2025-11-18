@@ -17,12 +17,12 @@ public class LobbyClient implements ClientMode {
 
     public String eval(String input, ServerFacade server) {
         String[] t = input.trim().split("\\s+");
-        if (t.length == 0) return "";
+        if (t.length == 0) {return "";}
 
         String cmd = t[0].toLowerCase();
         String authToken = state.getAuthToken();
 
-        if (cmd.equals("help")) return """
+        if (cmd.equals("help")) {return """
                 Commands:
                 list
                 create
@@ -30,9 +30,9 @@ public class LobbyClient implements ClientMode {
                 observe
                 logout
                 quit
-                """;
+                """;}
 
-        if (cmd.equals("quit")) return "__QUIT__";
+        if (cmd.equals("quit")) {return "__QUIT__";}
 
         if (cmd.equals("logout")) {
             server.logout(state.getAuthToken());
@@ -75,7 +75,7 @@ public class LobbyClient implements ClientMode {
         }
 
         if (cmd.equals("observe")) {
-            if (t.length < 2) return "format: observe <gameID>";
+            if (t.length < 2) {return "format: observe <gameID>";}
             int id = Integer.parseInt(t[1]);
             var req = new JoinGameRequest(null, id);
             server.joinGame(req, authToken);

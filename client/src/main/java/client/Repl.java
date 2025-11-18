@@ -26,7 +26,7 @@ public class Repl {
                 continue;
             }
             //make a bunch of if statmeents for each possible choice
-            if (result.equals("__QUIT__")) return;
+            if (result.equals("__QUIT__")) {return;}
             if (result.equals("__LOGGED_OUT__")) {
                 mode = new PreloginClient(state);
                 continue;
@@ -46,17 +46,16 @@ public class Repl {
                 continue;
             }
 
-
             System.out.println(result);
         }
     }
 
     private String clean(String m) {
-        if (m == null) return "unknown error";
-        if (m.toLowerCase().contains("unauthorized")) return "unauthorized";
-        if (m.toLowerCase().contains("already taken")) return "already taken";
-        if (m.toLowerCase().contains("forbidden")) return "forbidden";
-        if (m.toLowerCase().contains("bad request")) return "bad request";
+        if (m == null) {return "unknown error";}
+        if (m.toLowerCase().contains("unauthorized")) {return "unauthorized";}
+        if (m.toLowerCase().contains("already taken")) {return "already taken";}
+        if (m.toLowerCase().contains("forbidden")) {return "forbidden";}
+        if (m.toLowerCase().contains("bad request")) {return "bad request";}
         return "request failed";
     }
 }

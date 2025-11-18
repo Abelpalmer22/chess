@@ -19,7 +19,7 @@ public class PreloginClient implements ClientMode {
     @Override
     public String eval(String input, ServerFacade server) {
         String[] t = input.trim().split("\\s+");
-        if (t.length == 0) return "";
+        if (t.length == 0) {return "";}
 
         String cmd = t[0].toLowerCase();
 

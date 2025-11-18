@@ -49,7 +49,7 @@ public class ServerFacade {
         var url = baseUrl + path;
         var builder = HttpRequest.newBuilder().uri(URI.create(url));
 
-        if (token != null) builder.header("Authorization", token);
+        if (token != null) {builder.header("Authorization", token);}
         if (body != null) {
             builder.header("Content-Type", "application/json");
             builder.method(method, HttpRequest.BodyPublishers.ofString(gson.toJson(body)));
@@ -71,7 +71,6 @@ public class ServerFacade {
             if (type == Void.class) return null;
             return gson.fromJson(json, type);
         }
-
         if (json.contains("already taken")) {throw new RuntimeException("already taken");}
         if (json.contains("unauthorized")) {throw new RuntimeException("unauthorized");}
         if (json.contains("forbidden")) {throw new RuntimeException("forbidden");}
