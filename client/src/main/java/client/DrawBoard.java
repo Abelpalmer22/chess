@@ -15,7 +15,6 @@ public class DrawBoard {
             startRow = 8;
             endRow   = 1;
             rowStep  = -1;
-
             startCol = 1;
             endCol   = 8;
             colStep  = 1;
@@ -23,7 +22,6 @@ public class DrawBoard {
             startRow = 1;
             endRow   = 8;
             rowStep  = 1;
-
             startCol = 8;
             endCol   = 1;
             colStep  = -1;
@@ -39,7 +37,6 @@ public class DrawBoard {
             out.append(" ").append(r).append(" ");
 
             for (int c = startCol; c != endCol + colStep; c += colStep) {
-
                 isDark = (r + c) % 2 == 0;
 
                 if (isDark) {
