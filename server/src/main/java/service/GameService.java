@@ -42,7 +42,7 @@ public class GameService {
         var auth = authDAO.getAuthentication(authToken);
         String username = auth.username();
         if (r.playerColor() == null) {
-            throw new DataAccessException("bad request");
+            return new JoinGameResult();
         }
         GameData game;
         game = gameDAO.getGame(r.gameID());

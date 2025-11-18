@@ -5,10 +5,10 @@ import requests.CreateGameRequest;
 import requests.JoinGameRequest;
 
 public class LobbyClient implements ClientMode {
-    private final String authToken;
+    private final ClientState state;
 
-    public LobbyClient(String authToken) {
-        this.authToken = authToken;
+    public LobbyClient(ClientState state) {
+        this.state = state;
     }
 
     public String prompt() {
@@ -20,6 +20,7 @@ public class LobbyClient implements ClientMode {
         if (t.length == 0) return "";
 
         String cmd = t[0].toLowerCase();
+        String authToken = state.getAuthToken(); // ← ALWAYS use shared state
 
         if (cmd.equals("help")) return """
                 Commands:
@@ -33,15 +34,23 @@ public class LobbyClient implements ClientMode {
 
         if (cmd.equals("quit")) return "__QUIT__";
 
-        if (cmd.equals("logout")) return "__LOBBY__";
+        if (cmd.equals("logout")) {
+            state.setAuthToken(null);
+            return "__LOBBY__";
+        }
 
         if (cmd.equals("list")) {
             var res = server.listGames(authToken);
-            String gamesList = "";
+            StringBuilder gamesList = new StringBuilder();
             for (GameData game: res.games()) {
-                gamesList += game.gameName() + " " + game.whiteUsername() + " " + game.blackUsername() + "\n";
+                gamesList.append(game.gameName())
+                        .append(" ")
+                        .append(game.whiteUsername())
+                        .append(" ")
+                        .append(game.blackUsername())
+                        .append("\n");
             }
-            return gamesList;
+            return gamesList.toString();
         }
 
         if (cmd.equals("create")) {
@@ -56,18 +65,25 @@ public class LobbyClient implements ClientMode {
             int id = Integer.parseInt(t[1]);
             var req = new JoinGameRequest(t[2], id);
             server.joinGame(req, authToken);
-            return "__GAME__ " + authToken + " " + id;
+
+            state.setCurrentGameId(id);
+            state.setPlayerColor(t[2].toUpperCase());
+            state.setGame(new chess.ChessGame());
+
+            return "__GAME__";
         }
 
         if (cmd.equals("observe")) {
-            if (t.length < 2) {
-                return "usage: observe <gameID>";
-            }
+            if (t.length < 2) return "usage: observe <gameID>";
             int id = Integer.parseInt(t[1]);
             var req = new JoinGameRequest(null, id);
             server.joinGame(req, authToken);
-            return "__OBSERVE__" + authToken + " " + id;
 
+            state.setCurrentGameId(id);
+            state.setPlayerColor(null);
+            state.setGame(new chess.ChessGame());
+
+            return "__OBSERVE__";
         }
 
         return "unknown command";

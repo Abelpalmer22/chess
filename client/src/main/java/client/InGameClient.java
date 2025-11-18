@@ -1,25 +1,38 @@
 package client;
 
+import chess.ChessGame;
+
 public class InGameClient implements ClientMode {
-    private final String authToken;
-    private final int gameID;
+    private final ClientState state;
     private final boolean observer;
 
-    public InGameClient(String authToken, int gameID) {
-        this(authToken, gameID, false);
-    }
-
-    public InGameClient(String authToken, int gameID, boolean observer) {
-        this.authToken = authToken;
-        this.gameID = gameID;
+    public InGameClient(ClientState state, boolean observer) {
+        this.state = state;
         this.observer = observer;
-
     }
 
+    private String redraw() {
+        boolean whitePerspective;
+
+        String color = state.getPlayerColor();
+
+        if (observer) {
+            whitePerspective = true;
+        } else if ("BLACK".equalsIgnoreCase(color)) {
+            whitePerspective = false;
+        } else {
+            whitePerspective = true;
+        }
+
+        return DrawBoard.draw(state.getGame(), whitePerspective);
+    }
+
+    @Override
     public String prompt() {
-        return "[game " + gameID + "] >>> ";
+        return "[game " + state.getCurrentGameId() + "] >>> ";
     }
 
+    @Override
     public String eval(String input, ServerFacade server) {
         String[] t = input.trim().split("\\s+");
         if (t.length == 0) return "";
@@ -36,11 +49,19 @@ public class InGameClient implements ClientMode {
 
         if (cmd.equals("quit")) return "__QUIT__";
 
-        if (cmd.equals("leave")) return "__LOBBY__";
+        if (cmd.equals("leave")) {
+            // stay logged in, just return to lobby
+            return "__LOBBY__";
+        }
 
-        if (cmd.equals("resign")) return "resigned";
+        if (cmd.equals("resign")) {
+            if (observer) return "You are an observer to this game.";
+            return "resigned";
+        }
 
-        if (cmd.equals("redraw")) return "board not implemented";
+        if (cmd.equals("redraw")) {
+            return redraw();
+        }
 
         return "unknown command";
     }

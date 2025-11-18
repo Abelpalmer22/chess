@@ -4,7 +4,8 @@ import java.util.Scanner;
 
 public class Repl {
     private final ServerFacade server;
-    private ClientMode mode = new PreloginClient();
+    private final ClientState state = new ClientState();
+    private ClientMode mode = new PreloginClient(state);
     private final Scanner scanner = new Scanner(System.in);
 
     public Repl(String serverUrl) {
@@ -27,26 +28,21 @@ public class Repl {
             }
 
             if (result.equals("__QUIT__")) return;
-            if (result.startsWith("__LOBBY__")) {
-                String token = result.substring("__LOBBY__".length()).trim();
-                mode = new LobbyClient(token);
-                continue;
-            }
-            if (result.startsWith("__GAME__")) {
-                String[] parts = result.substring("__GAME__".length()).trim().split(" ");
-                String token = parts[0];
-                int id = Integer.parseInt(parts[1]);
-                mode = new InGameClient(token, id);
+            if (result.equals("__LOBBY__")) {
+                mode = new LobbyClient(state);
                 continue;
             }
 
-            if (result.startsWith("__OBSERVE__")) {
-                var parts = result.split("\\s+");
-                var token = parts[1];
-                var gameID = Integer.parseInt(parts[2]);
-                mode = new InGameClient(token, gameID, true); // true = observer mode
+            if (result.equals("__GAME__")) {
+                mode = new InGameClient(state, false);
                 continue;
             }
+
+            if (result.equals("__OBSERVE__")) {
+                mode = new InGameClient(state, true);
+                continue;
+            }
+
 
             System.out.println(result);
         }
