@@ -67,7 +67,7 @@ public class ServerFacade {
         var json = response.body();
 
         if (code == 200) {
-            if (type == Void.class) return null;
+            if (type == Void.class) {return null;}
             return gson.fromJson(json, type);
         }
         if (json.contains("already taken")) {throw new RuntimeException("already taken");}

@@ -55,14 +55,14 @@ public class LobbyClient implements ClientMode {
         }
 
         if (cmd.equals("create")) {
-            if (t.length < 2) return "format: create <gameName>";
+            if (t.length < 2) {return "format: create <gameName>";}
             var req = new CreateGameRequest(t[1]);
             var res = server.createGame(req, authToken);
             return "created game " + res.gameID();
         }
 
         if (cmd.equals("play")) {
-            if (t.length < 3) return "format: play <gameID> <WHITE|BLACK>";
+            if (t.length < 3) {return "format: play <gameID> <WHITE|BLACK>";}
             int id = Integer.parseInt(t[1]);
             var req = new JoinGameRequest(t[2], id);
             server.joinGame(req, authToken);
