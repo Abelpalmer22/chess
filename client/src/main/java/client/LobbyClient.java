@@ -20,7 +20,7 @@ public class LobbyClient implements ClientMode {
         if (t.length == 0) return "";
 
         String cmd = t[0].toLowerCase();
-        String authToken = state.getAuthToken(); // ← ALWAYS use shared state
+        String authToken = state.getAuthToken();
 
         if (cmd.equals("help")) return """
                 Commands:

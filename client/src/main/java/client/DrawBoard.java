@@ -7,14 +7,10 @@ public class DrawBoard {
 
     public static String draw(ChessGame game, boolean whitePerspective) {
         StringBuilder out = new StringBuilder();
-
         out.append(EscapeSequences.ERASE_SCREEN);
-
         var board = game.getBoard();
-
         int startRow, endRow, rowStep;
         int startCol, endCol, colStep;
-
         if (whitePerspective) {
             startRow = 8;
             endRow   = 1;
@@ -38,9 +34,7 @@ public class DrawBoard {
             out.append("  ").append((char) ('a' + c - 1)).append(" ");
         }
         out.append("\n");
-
-        boolean isDark;
-
+        boolean isDark; //for dark squares
         for (int r = startRow; r != endRow + rowStep; r += rowStep) {
             out.append(" ").append(r).append(" ");
 
@@ -53,9 +47,7 @@ public class DrawBoard {
                 } else {
                     out.append(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
                 }
-
                 ChessPiece piece = board.getPiece(new ChessPosition(r, c));
-
                 if (piece == null) {
                     out.append(EscapeSequences.EMPTY);
                 } else {
@@ -76,7 +68,6 @@ public class DrawBoard {
         for (int c = startCol; c != endCol + colStep; c += colStep) {
             out.append("  ").append((char) ('a' + c - 1)).append(" ");
         }
-
         return out.toString();
     }
 
