@@ -41,8 +41,8 @@ public class GameService {
         }
         var auth = authDAO.getAuthentication(authToken);
         String username = auth.username();
-        if (r.playerColor() == null) {
-            return new JoinGameResult();
+        if (r.playerColor() == null || r.playerColor().trim().isEmpty()) {
+            throw new DataAccessException("bad request");
         }
         GameData game;
         game = gameDAO.getGame(r.gameID());
