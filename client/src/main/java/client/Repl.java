@@ -18,7 +18,6 @@ public class Repl {
         while (true) {
             System.out.print(mode.prompt());
             String input = scanner.nextLine();
-
             String result;
             try {
                 result = mode.eval(input, server);
@@ -26,7 +25,7 @@ public class Repl {
                 System.out.println("Error: " + clean(e.getMessage()));
                 continue;
             }
-
+            //make a bunch of if statmeents for each possible choice
             if (result.equals("__QUIT__")) return;
             if (result.equals("__LOGGED_OUT__")) {
                 mode = new PreloginClient(state);

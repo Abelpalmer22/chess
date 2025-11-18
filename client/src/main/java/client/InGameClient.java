@@ -12,18 +12,11 @@ public class InGameClient implements ClientMode {
     }
 
     private String redraw() {
-        boolean whitePerspective;
-
+        boolean whitePerspective = true;
         String color = state.getPlayerColor();
-
-        if (observer) {
-            whitePerspective = true;
-        } else if ("BLACK".equalsIgnoreCase(color)) {
+        if ("BLACK".equalsIgnoreCase(color)) {
             whitePerspective = false;
-        } else {
-            whitePerspective = true;
         }
-
         return DrawBoard.draw(state.getGame(), whitePerspective);
     }
 
@@ -39,23 +32,22 @@ public class InGameClient implements ClientMode {
 
         String cmd = t[0].toLowerCase();
 
-        if (cmd.equals("help")) return """
+        if (cmd.equals("help")) {return """
                 Commands:
                 leave
                 resign
                 redraw
                 quit
-                """;
+                """;}
 
-        if (cmd.equals("quit")) return "__QUIT__";
+        if (cmd.equals("quit")) {return "__QUIT__";}
 
         if (cmd.equals("leave")) {
-            // stay logged in, just return to lobby
             return "__LOBBY__";
         }
 
         if (cmd.equals("resign")) {
-            if (observer) return "You are an observer to this game.";
+            if (observer) {return "You are an observer to this game.";}
             return "resigned";
         }
 

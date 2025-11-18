@@ -31,34 +31,26 @@ public class PreloginClient implements ClientMode {
                     quit
                     """;
         }
-
         if (cmd.equals("quit")) {
             return "__QUIT__";
         }
-
         if (cmd.equals("login")) {
             if (t.length < 3) {
-                return "usage: login <username> <password>";
+                return "format: login <username> <password>";
             }
 
             var req = new LoginRequest(t[1], t[2]);
             var res = server.login(req);
-
-            // *** THIS IS THE IMPORTANT PART ***
             state.setAuthToken(res.authToken());
-            // No token in the return string anymore
             return "__LOBBY__";
         }
-
         if (cmd.equals("register")) {
             if (t.length < 4) {
-                return "usage: register <username> <password> <email>";
+                return "format: register <username> <password> <email>";
             }
 
             var req = new RegisterRequest(t[1], t[2], t[3]);
             var res = server.register(req);
-
-            // Many implementations auto-login on register:
             state.setAuthToken(res.authToken());
             return "__LOBBY__";
         }
