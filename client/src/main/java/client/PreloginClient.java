@@ -23,11 +23,18 @@ public class PreloginClient implements ClientMode {
 
         String cmd = t[0].toLowerCase();
 
+        if (cmd.equals("clear")) {
+            server.clear();
+            return "database cleared";
+        }
+
+
         if (cmd.equals("help")) {
             return """
                     Commands:
                     register <username> <password> <email>
                     login <username> <password>
+                    clear
                     quit
                     """;
         }

@@ -44,6 +44,11 @@ public class ServerFacade {
         send("PUT", "/game", req, authToken, JoinGameResult.class);
     }
 
+    public void clear() throws RuntimeException {
+        send("DELETE", "/db", null, null, Void.class);
+    }
+
+
 
     private <T> T send(String method, String path, Object body, String token, Class<T> type) {
         var url = baseUrl + path;
