@@ -60,7 +60,6 @@ public class LobbyClient implements ClientMode {
             var res = server.createGame(req, authToken);
             return "created game " + res.gameID();
         }
-
         if (cmd.equals("play")) {
             if (t.length < 3) {return "format: play <gameID> <WHITE|BLACK>";}
             int id = Integer.parseInt(t[1]);
