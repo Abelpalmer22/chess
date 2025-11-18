@@ -16,7 +16,6 @@ public class DrawBoard {
         int startCol, endCol, colStep;
 
         if (whitePerspective) {
-            // White's view: a8 at top-left, a1 at bottom-left
             startRow = 8;
             endRow   = 1;
             rowStep  = -1;
@@ -25,7 +24,6 @@ public class DrawBoard {
             endCol   = 8;
             colStep  = 1;
         } else {
-            // Black's view: h1 at top-left, h8 at bottom-left
             startRow = 1;
             endRow   = 8;
             rowStep  = 1;
@@ -35,7 +33,6 @@ public class DrawBoard {
             colStep  = -1;
         }
 
-        // file letters on top
         out.append("   ");
         for (int c = startCol; c != endCol + colStep; c += colStep) {
             out.append("  ").append((char) ('a' + c - 1)).append(" ");
@@ -49,7 +46,7 @@ public class DrawBoard {
 
             for (int c = startCol; c != endCol + colStep; c += colStep) {
 
-                isDark = (r + c) % 2 == 0; // a1 (1,1) => dark
+                isDark = (r + c) % 2 == 0;
 
                 if (isDark) {
                     out.append(EscapeSequences.SET_BG_COLOR_DARK_GREY);
@@ -63,7 +60,7 @@ public class DrawBoard {
                     out.append(EscapeSequences.EMPTY);
                 } else {
                     if (piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
-                        out.append(getWhitePiece(piece.getPieceType()));
+                        out.append(getWhitePiece(piece.getPieceType())); // super super jank i know but it works
                     } else {
                         out.append(getBlackPiece(piece.getPieceType()));
                     }
@@ -75,7 +72,6 @@ public class DrawBoard {
             out.append(" ").append(r).append("\n");
         }
 
-        // file letters on bottom
         out.append("   ");
         for (int c = startCol; c != endCol + colStep; c += colStep) {
             out.append("  ").append((char) ('a' + c - 1)).append(" ");

@@ -1,6 +1,5 @@
 package client;
 import com.google.gson.Gson;
-import model.GameData;
 import requests.CreateGameRequest;
 import requests.JoinGameRequest;
 import requests.LoginRequest;
@@ -73,13 +72,10 @@ public class ServerFacade {
             return gson.fromJson(json, type);
         }
 
-        if (json.contains("already taken")) throw new RuntimeException("already taken");
-        if (json.contains("unauthorized")) throw new RuntimeException("unauthorized");
-        if (json.contains("forbidden")) throw new RuntimeException("forbidden");
-        if (json.contains("bad request")) throw new RuntimeException("bad request");
-
-
-
+        if (json.contains("already taken")) {throw new RuntimeException("already taken");}
+        if (json.contains("unauthorized")) {throw new RuntimeException("unauthorized");}
+        if (json.contains("forbidden")) {throw new RuntimeException("forbidden");}
+        if (json.contains("bad request")) {throw new RuntimeException("bad request");}
 
         throw new RuntimeException("request failed");
     }

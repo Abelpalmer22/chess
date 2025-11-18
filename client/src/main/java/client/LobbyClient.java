@@ -55,14 +55,14 @@ public class LobbyClient implements ClientMode {
         }
 
         if (cmd.equals("create")) {
-            if (t.length < 2) return "usage: create <gameName>";
+            if (t.length < 2) return "format: create <gameName>";
             var req = new CreateGameRequest(t[1]);
             var res = server.createGame(req, authToken);
             return "created game " + res.gameID();
         }
 
         if (cmd.equals("play")) {
-            if (t.length < 3) return "usage: play <gameID> <WHITE|BLACK>";
+            if (t.length < 3) return "format: play <gameID> <WHITE|BLACK>";
             int id = Integer.parseInt(t[1]);
             var req = new JoinGameRequest(t[2], id);
             server.joinGame(req, authToken);
@@ -75,7 +75,7 @@ public class LobbyClient implements ClientMode {
         }
 
         if (cmd.equals("observe")) {
-            if (t.length < 2) return "usage: observe <gameID>";
+            if (t.length < 2) return "format: observe <gameID>";
             int id = Integer.parseInt(t[1]);
             var req = new JoinGameRequest(null, id);
             server.joinGame(req, authToken);
