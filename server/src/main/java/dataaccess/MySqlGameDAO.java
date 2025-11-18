@@ -53,7 +53,6 @@ public class MySqlGameDAO implements GameDAO {
             stmt.setString(5, json);
 
             stmt.executeUpdate();
-            System.out.println(">>> MySqlGameDAO.createGame() finished; verifying row count...");
             try (var checkStmt = conn.prepareStatement("SELECT COUNT(*) AS count FROM game");
                  var rs = checkStmt.executeQuery()) {
                 if (rs.next()) {
