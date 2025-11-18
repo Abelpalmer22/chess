@@ -54,7 +54,6 @@ public class DrawBoard {
                         out.append(getBlackPiece(piece.getPieceType()));
                     }
                 }
-
                 out.append(EscapeSequences.RESET_BG_COLOR);
             }
 
