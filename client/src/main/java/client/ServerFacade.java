@@ -1,5 +1,6 @@
 package client;
 import com.google.gson.Gson;
+import model.GameData;
 import requests.CreateGameRequest;
 import requests.JoinGameRequest;
 import requests.LoginRequest;
@@ -43,6 +44,11 @@ public class ServerFacade {
     public JoinGameResult joinGame(JoinGameRequest req, String authToken) throws RuntimeException {
         return send("PUT", "/game", req, authToken, JoinGameResult.class);
     }
+
+    public GameData getGame(int gameID, String token) {
+        return send("GET", "/game/" + gameID, null, token, GameData.class);
+    }
+
 
     private <T> T send(String method, String path, Object body, String token, Class<T> type) {
         var url = baseUrl + path;
