@@ -27,7 +27,6 @@ public class MySqlGameDAO implements GameDAO {
             throw new DataAccessException("Unable to create game table", e);
         }
     }
-
     @Override
     public void clear() throws DataAccessException {
         try (var conn = DatabaseManager.getConnection();
