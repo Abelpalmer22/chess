@@ -56,7 +56,6 @@ public class ServerFacade {
         } else {
             builder.method(method, HttpRequest.BodyPublishers.noBody());
         }
-
         HttpResponse<String> response;
         try {
             response = client.send(builder.build(), HttpResponse.BodyHandlers.ofString());

@@ -45,7 +45,6 @@ public class Repl {
                 mode = new InGameClient(state, true);
                 continue;
             }
-
             System.out.println(result);
         }
     }
