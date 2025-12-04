@@ -10,7 +10,7 @@ public class InGameClient implements ClientMode {
         System.out.println(redraw());
     }
 
-    private String redraw() {
+    public String redraw() {
         boolean whitePerspective = true;
         String color = state.getPlayerColor();
         if ("BLACK".equalsIgnoreCase(color)) {
