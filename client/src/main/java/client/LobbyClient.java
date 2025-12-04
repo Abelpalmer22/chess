@@ -32,7 +32,10 @@ public class LobbyClient implements ClientMode {
                 quit
                 """;}
 
-        if (cmd.equals("quit")) {return "__QUIT__";}
+        if (cmd.equals("quit")) {
+
+            return "__QUIT__";
+        }
 
         if (cmd.equals("logout")) {
             server.logout(state.getAuthToken());
@@ -43,13 +46,18 @@ public class LobbyClient implements ClientMode {
         if (cmd.equals("list")) {
             var res = server.listGames(authToken);
             StringBuilder gamesList = new StringBuilder();
+            int i = 0;
             for (GameData game: res.games()) {
-                gamesList.append(game.gameName())
-                        .append(" ")
+                gamesList.append("Game Number: ")
+                        .append(i+1)
+                        .append("\n  Game Name: ")
+                        .append(game.gameName())
+                        .append("\n  White Player: ")
                         .append(game.whiteUsername())
-                        .append(" ")
+                        .append("\n  Black Player: ")
                         .append(game.blackUsername())
                         .append("\n");
+                i++;
             }
             return gamesList.toString();
         }
@@ -61,17 +69,15 @@ public class LobbyClient implements ClientMode {
             return "created game " + res.gameID();
         }
         if (cmd.equals("play")) {
-            if (t.length < 3) {return "format: play <gameID> <WHITE|BLACK>";}
+            if (t.length < 3) return "format: play <gameID> <WHITE|BLACK>";
+
             int id = Integer.parseInt(t[1]);
             var req = new JoinGameRequest(t[2], id);
             server.joinGame(req, authToken);
 
-            state.setCurrentGameId(id);
-            state.setPlayerColor(t[2].toUpperCase());
-            state.setGame(new chess.ChessGame());
-
-            return "__GAME__";
+            return "__GAME__ " + authToken + " " + id + " " + t[2].toUpperCase();
         }
+
 
         if (cmd.equals("observe")) {
             if (t.length < 2) {return "format: observe <gameID>";}

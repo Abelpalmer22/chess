@@ -39,14 +39,32 @@ public class GameService {
         if (r == null) {
             throw new DataAccessException("bad request");
         }
+
         var auth = authDAO.getAuthentication(authToken);
         String username = auth.username();
-        if (r.playerColor() == null || r.playerColor().trim().isEmpty()) {
+        if (r.playerColor() == null) {
+            GameData game = gameDAO.getGame(r.gameID());
+
+            boolean changed = false;
+            if (username.equals(game.whiteUsername())) {
+                game = new GameData(game.gameID(), null, game.blackUsername(), game.gameName(), game.game());
+                changed = true;
+            }
+            if (username.equals(game.blackUsername())) {
+                game = new GameData(game.gameID(), game.whiteUsername(), null, game.gameName(), game.game());
+                changed = true;
+            }
+            if (changed) gameDAO.updateGame(game);
+
+            return new JoinGameResult();
+        }
+        if (r.playerColor().trim().isEmpty()) {
             throw new DataAccessException("bad request");
         }
-        GameData game;
-        game = gameDAO.getGame(r.gameID());
+
+        GameData game = gameDAO.getGame(r.gameID());
         String color = r.playerColor().trim().toUpperCase();
+
         if ("WHITE".equals(color)) {
             if (game.whiteUsername() != null) {
                 throw new DataAccessException("already taken");
@@ -60,9 +78,9 @@ public class GameService {
         } else {
             throw new DataAccessException("bad request");
         }
-
         gameDAO.updateGame(game);
         return new JoinGameResult();
     }
+
 
 }

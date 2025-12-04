@@ -1,7 +1,5 @@
 package client;
 
-import chess.ChessGame;
-
 public class InGameClient implements ClientMode {
     private final ClientState state;
     private final boolean observer;
@@ -9,6 +7,7 @@ public class InGameClient implements ClientMode {
     public InGameClient(ClientState state, boolean observer) {
         this.state = state;
         this.observer = observer;
+        System.out.println(redraw());
     }
 
     private String redraw() {
@@ -28,26 +27,37 @@ public class InGameClient implements ClientMode {
     @Override
     public String eval(String input, ServerFacade server) {
         String[] t = input.trim().split("\\s+");
-        if (t.length == 0) {return "";}
+        if (t.length == 0) return "";
 
         String cmd = t[0].toLowerCase();
 
-        if (cmd.equals("help")) {return """
+        if (cmd.equals("help")) return """
                 Commands:
                 leave
                 resign
                 redraw
                 quit
-                """;}
+                """;
 
-        if (cmd.equals("quit")) {return "__QUIT__";}
+        if (cmd.equals("quit")) {
+            if (!observer) {
+                server.joinGame(new requests.JoinGameRequest(null, state.getCurrentGameId()), state.getAuthToken());
+            }
+            return "__QUIT__";
+        }
 
         if (cmd.equals("leave")) {
+            if (!observer) {
+                server.joinGame(new requests.JoinGameRequest(null, state.getCurrentGameId()), state.getAuthToken());
+            }
             return "__LOBBY__";
         }
 
         if (cmd.equals("resign")) {
-            if (observer) {return "You are an observer to this game.";}
+            if (observer) {
+                return "You are an observer to this game.";
+            }
+            server.joinGame(new requests.JoinGameRequest(null, state.getCurrentGameId()), state.getAuthToken());
             return "resigned";
         }
 
@@ -58,3 +68,4 @@ public class InGameClient implements ClientMode {
         return "unknown command";
     }
 }
+

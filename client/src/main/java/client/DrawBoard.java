@@ -29,7 +29,7 @@ public class DrawBoard {
 
         out.append("   ");
         for (int c = startCol; c != endCol + colStep; c += colStep) {
-            out.append("  ").append((char) ('a' + c - 1)).append(" ");
+            out.append(" ").append((char) ('a' + c - 1)).append(" ");
         }
         out.append("\n");
         boolean isDark; //for dark squares
@@ -62,7 +62,7 @@ public class DrawBoard {
 
         out.append("   ");
         for (int c = startCol; c != endCol + colStep; c += colStep) {
-            out.append("  ").append((char) ('a' + c - 1)).append(" ");
+            out.append(" ").append((char) ('a' + c - 1)).append(" ");
         }
         return out.toString();
     }

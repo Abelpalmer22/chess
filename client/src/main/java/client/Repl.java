@@ -1,5 +1,7 @@
 package client;
 
+import chess.ChessGame;
+
 import java.util.Scanner;
 
 public class Repl {
@@ -36,10 +38,22 @@ public class Repl {
                 continue;
             }
 
-            if (result.equals("__GAME__")) {
+            if (result.startsWith("__GAME__")) {
+                String[] parts = result.split("\\s+");
+
+                String token = parts[1];
+                int gameID = Integer.parseInt(parts[2]);
+                String color = parts[3];
+
+                state.setAuthToken(token);
+                state.setCurrentGameId(gameID);
+                state.setPlayerColor(color);
+                state.setGame(new ChessGame());
+
                 mode = new InGameClient(state, false);
                 continue;
             }
+
 
             if (result.equals("__OBSERVE__")) {
                 mode = new InGameClient(state, true);
