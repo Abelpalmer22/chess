@@ -166,7 +166,7 @@ public class WSEndpoint {
             var auth = authDAO.getAuthentication(cmd.getAuthToken());
             String username = auth.username();
             GameData game = gameDAO.getGame(cmd.getGameID());
-            boolean changed = false;
+            boolean different = false;
             if (username.equals(game.whiteUsername())) {
                 game = new GameData(
                         game.gameID(),
@@ -176,7 +176,7 @@ public class WSEndpoint {
                         game.game(),
                         game.gameOver()
                 );
-                changed = true;
+                different = true;
             }
 
             else if (username.equals(game.blackUsername())) {
@@ -188,10 +188,10 @@ public class WSEndpoint {
                         game.game(),
                         game.gameOver()
                 );
-                changed = true;
+                different = true;
             }
 
-            if (changed) {
+            if (different) {
                 gameDAO.updateGame(game);
             }
 

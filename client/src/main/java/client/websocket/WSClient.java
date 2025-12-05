@@ -14,7 +14,6 @@ import websocket.messages.NotificationMessage;
 import org.glassfish.tyrus.client.ClientManager;
 
 import jakarta.websocket.*;
-import org.glassfish.tyrus.client.ClientManager;
 import java.net.URI;
 
 
@@ -98,9 +97,6 @@ public class WSClient {
             }
         }
     }
-
-
-
 
     public void send(UserGameCommand cmd) {
         try {
