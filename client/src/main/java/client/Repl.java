@@ -20,19 +20,21 @@ public class Repl {
         while (true) {
             System.out.print(mode.prompt());
             String input = scanner.nextLine();
+
             String result;
             try {
                 result = mode.eval(input, server);
             } catch (Exception e) {
-                System.out.println("Error: " + clean(e.getMessage()));
-                continue;
+                result = "Error: " + clean(e.getMessage());
             }
-            //make a bunch of if statmeents for each possible choice
-            if (result.equals("__QUIT__")) {return;}
+
+            if (result.equals("__QUIT__")) { return; }
+
             if (result.equals("__LOGGED_OUT__")) {
                 mode = new PreloginClient(state);
                 continue;
             }
+
             if (result.equals("__LOBBY__")) {
                 mode = new LobbyClient(state);
                 continue;
@@ -50,17 +52,32 @@ public class Repl {
                 state.setPlayerColor(color);
                 state.setGame(new ChessGame());
 
+                var ws = new client.websocket.WSClient(state);
+                try {
+                    ws.connect();  // opens the socket
+                    state.setWsClient(ws);
+                } catch (Exception e) {
+                    System.out.println("Failed to open WebSocket: " + e.getMessage());
+                    continue;
+                }
+
+                var connectCmd = new websocket.commands.UserGameCommand(
+                        websocket.commands.UserGameCommand.CommandType.CONNECT,
+                        token,
+                        gameID
+                );
+                ws.send(connectCmd);
+
                 mode = new InGameClient(state, false);
                 continue;
             }
-
+            System.out.println(result);
 
             if (result.equals("__OBSERVE__")) {
                 mode = new InGameClient(state, true);
-                continue;
             }
-            System.out.println(result);
         }
+
     }
 
     private String clean(String m) {

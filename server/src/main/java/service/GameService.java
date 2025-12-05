@@ -29,11 +29,10 @@ public class GameService {
         }
         authDAO.getAuthentication(authToken);
         int id = gameDAO.makeNewID();
-        GameData game = new GameData(id, null, null, r.gameName(), new ChessGame());
+        GameData game = new GameData(id, null, null, r.gameName(), new ChessGame(), false);
         gameDAO.createGame(game);
         return new CreateGameResult(id);
     }
-
 
     public JoinGameResult joinGame(JoinGameRequest r, String authToken) throws DataAccessException {
         if (r == null) {
@@ -42,45 +41,79 @@ public class GameService {
 
         var auth = authDAO.getAuthentication(authToken);
         String username = auth.username();
-        if (r.playerColor() == null) {
-            GameData game = gameDAO.getGame(r.gameID());
-
-            boolean changed = false;
-            if (username.equals(game.whiteUsername())) {
-                game = new GameData(game.gameID(), null, game.blackUsername(), game.gameName(), game.game());
-                changed = true;
-            }
-            if (username.equals(game.blackUsername())) {
-                game = new GameData(game.gameID(), game.whiteUsername(), null, game.gameName(), game.game());
-                changed = true;
-            }
-            if (changed) gameDAO.updateGame(game);
-
-            return new JoinGameResult();
-        }
-        if (r.playerColor().trim().isEmpty()) {
-            throw new DataAccessException("bad request");
-        }
 
         GameData game = gameDAO.getGame(r.gameID());
+        if (game.gameOver()) {
+            throw new DataAccessException("forbidden");
+        }
+
+        if (r.playerColor() == null) {
+            boolean changed = false;
+
+            if (username.equals(game.whiteUsername())) {
+                game = new GameData(
+                        game.gameID(),
+                        null,
+                        game.blackUsername(),
+                        game.gameName(),
+                        game.game(),
+                        game.gameOver()
+                );
+                changed = true;
+            }
+
+            if (username.equals(game.blackUsername())) {
+                game = new GameData(
+                        game.gameID(),
+                        game.whiteUsername(),
+                        null,
+                        game.gameName(),
+                        game.game(),
+                        game.gameOver()
+                );
+                changed = true;
+            }
+
+            if (changed) gameDAO.updateGame(game);
+            return new JoinGameResult();
+        }
+
         String color = r.playerColor().trim().toUpperCase();
+        if (color.isEmpty()) {
+            throw new DataAccessException("bad request");
+        }
 
         if ("WHITE".equals(color)) {
             if (game.whiteUsername() != null) {
                 throw new DataAccessException("already taken");
             }
-            game = new GameData(game.gameID(), username, game.blackUsername(), game.gameName(), game.game());
-        } else if ("BLACK".equals(color)) {
+            game = new GameData(
+                    game.gameID(),
+                    username,
+                    game.blackUsername(),
+                    game.gameName(),
+                    game.game(),
+                    game.gameOver()
+            );
+        }
+        else if ("BLACK".equals(color)) {
             if (game.blackUsername() != null) {
                 throw new DataAccessException("already taken");
             }
-            game = new GameData(game.gameID(), game.whiteUsername(), username, game.gameName(), game.game());
-        } else {
+            game = new GameData(
+                    game.gameID(),
+                    game.whiteUsername(),
+                    username,
+                    game.gameName(),
+                    game.game(),
+                    game.gameOver()
+            );
+        }
+        else {
             throw new DataAccessException("bad request");
         }
+
         gameDAO.updateGame(game);
         return new JoinGameResult();
     }
-
-
 }

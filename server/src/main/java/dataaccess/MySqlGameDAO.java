@@ -14,19 +14,23 @@ public class MySqlGameDAO implements GameDAO {
     public static void createTable() throws DataAccessException {
         try (var conn = DatabaseManager.getConnection();
              var stmt = conn.createStatement()) {
+
             stmt.executeUpdate("""
                 CREATE TABLE IF NOT EXISTS game (
                     id INT PRIMARY KEY,
                     whiteUsername VARCHAR(255),
                     blackUsername VARCHAR(255),
                     gameName VARCHAR(255),
-                    game TEXT
+                    game TEXT,
+                    gameOver BOOLEAN NOT NULL DEFAULT FALSE
                 )
             """);
+
         } catch (SQLException e) {
             throw new DataAccessException("Unable to create game table", e);
         }
     }
+
     @Override
     public void clear() throws DataAccessException {
         try (var conn = DatabaseManager.getConnection();
@@ -39,7 +43,7 @@ public class MySqlGameDAO implements GameDAO {
 
     @Override
     public GameData createGame(GameData game) throws DataAccessException {
-        var sql = "INSERT INTO game (id, whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?, ?)";
+        var sql = "INSERT INTO game (id, whiteUsername, blackUsername, gameName, game, gameOver) VALUES (?, ?, ?, ?, ?, ?)";
         try (var conn = DatabaseManager.getConnection();
              var stmt = conn.prepareStatement(sql)) {
 
@@ -47,17 +51,10 @@ public class MySqlGameDAO implements GameDAO {
             stmt.setString(2, game.whiteUsername());
             stmt.setString(3, game.blackUsername());
             stmt.setString(4, game.gameName());
-
-            String json = GSON.toJson(game.game());
-            stmt.setString(5, json);
+            stmt.setString(5, GSON.toJson(game.game()));
+            stmt.setBoolean(6, game.gameOver());   // NEW FIELD
 
             stmt.executeUpdate();
-            try (var checkStmt = conn.prepareStatement("SELECT COUNT(*) AS count FROM game");
-                 var rs = checkStmt.executeQuery()) {
-                if (rs.next()) {
-                    System.out.println(">>> Row count in-game table now: " + rs.getInt("count"));
-                }
-            }
 
             return game;
 
@@ -68,10 +65,12 @@ public class MySqlGameDAO implements GameDAO {
 
     @Override
     public GameData getGame(int gameID) throws DataAccessException {
-        var sql = "SELECT id, whiteUsername, blackUsername, gameName, game FROM game WHERE id=?";
+        var sql = "SELECT id, whiteUsername, blackUsername, gameName, game, gameOver FROM game WHERE id=?";
         try (var conn = DatabaseManager.getConnection();
              var stmt = conn.prepareStatement(sql)) {
+
             stmt.setInt(1, gameID);
+
             try (var rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     var white = rs.getString("whiteUsername");
@@ -79,11 +78,15 @@ public class MySqlGameDAO implements GameDAO {
                     var name = rs.getString("gameName");
                     var json = rs.getString("game");
                     var chessGame = GSON.fromJson(json, ChessGame.class);
-                    return new GameData(gameID, white, black, name, chessGame);
+                    var gameOver = rs.getBoolean("gameOver");   // NEW FIELD
+
+                    return new GameData(gameID, white, black, name, chessGame, gameOver);
+
                 } else {
                     throw new DataAccessException("bad request");
                 }
             }
+
         } catch (SQLException e) {
             throw new DataAccessException("Unable to read game", e);
         }
@@ -92,8 +95,11 @@ public class MySqlGameDAO implements GameDAO {
     @Override
     public void updateGame(GameData game) throws DataAccessException {
         var sql = """
-                UPDATE game SET whiteUsername=?, blackUsername=?, gameName=?, game=? WHERE id=?
+                UPDATE game 
+                SET whiteUsername=?, blackUsername=?, gameName=?, game=?, gameOver=? 
+                WHERE id=?
                 """;
+
         try (var conn = DatabaseManager.getConnection();
              var stmt = conn.prepareStatement(sql)) {
 
@@ -101,7 +107,8 @@ public class MySqlGameDAO implements GameDAO {
             stmt.setString(2, game.blackUsername());
             stmt.setString(3, game.gameName());
             stmt.setString(4, GSON.toJson(game.game()));
-            stmt.setInt(5, game.gameID());
+            stmt.setBoolean(5, game.gameOver());   // NEW FIELD
+            stmt.setInt(6, game.gameID());
 
             int affected = stmt.executeUpdate();
             if (affected == 0) {
@@ -115,7 +122,7 @@ public class MySqlGameDAO implements GameDAO {
 
     @Override
     public Collection<GameData> listGames() throws DataAccessException {
-        var sql = "SELECT id, whiteUsername, blackUsername, gameName, game FROM game";
+        var sql = "SELECT id, whiteUsername, blackUsername, gameName, game, gameOver FROM game";
         var games = new ArrayList<GameData>();
 
         try (var conn = DatabaseManager.getConnection();
@@ -128,7 +135,9 @@ public class MySqlGameDAO implements GameDAO {
                 var black = rs.getString("blackUsername");
                 var name = rs.getString("gameName");
                 var chess = GSON.fromJson(rs.getString("game"), ChessGame.class);
-                games.add(new GameData(id, white, black, name, chess));
+                var gameOver = rs.getBoolean("gameOver");
+
+                games.add(new GameData(id, white, black, name, chess, gameOver));
             }
 
         } catch (SQLException e) {
@@ -143,15 +152,15 @@ public class MySqlGameDAO implements GameDAO {
         try (var conn = DatabaseManager.getConnection();
              var stmt = conn.prepareStatement(sql);
              var rs = stmt.executeQuery()) {
+
             if (rs.next()) {
                 return rs.getInt("max_id") + 1;
             } else {
                 return 1;
             }
+
         } catch (SQLException e) {
             throw new RuntimeException("Unable to get next game ID", e);
         }
     }
 }
-
-

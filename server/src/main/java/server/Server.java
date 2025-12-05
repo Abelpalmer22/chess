@@ -1,12 +1,12 @@
 package server;
+
 import io.javalin.Javalin;
 import dataaccess.*;
 import io.javalin.json.JavalinGson;
 import service.ClearService;
 import service.GameService;
 import service.UserService;
-
-import javax.xml.crypto.Data;
+import server.websocket.WSEndpoint;
 
 public class Server {
 
@@ -31,11 +31,20 @@ public class Server {
         var gameDAO = new MySqlGameDAO();
         var authDAO = new MySqlAuthDAO();
 
-        // Register your endpoints and exception handlers here.
+        // Services
         ClearService clearService = new ClearService(userDAO, gameDAO, authDAO);
         UserService userService = new UserService(gameDAO, authDAO, userDAO);
         GameService gameService = new GameService(gameDAO, authDAO);
+
         Handler handler = new Handler(clearService, userService, gameService);
+
+        javalin.ws("/ws", ws -> {
+            WSEndpoint endpoint = new WSEndpoint();
+
+            ws.onConnect(endpoint::onConnect);
+            ws.onMessage(ctx -> endpoint.onMessage(ctx, ctx.message()));
+            ws.onClose(endpoint::onClose);
+        });
 
         javalin.delete("/db", handler::clear);
         javalin.post("/user", handler::register);
@@ -55,7 +64,6 @@ public class Server {
         javalin.stop();
     }
 }
-
 
 
 

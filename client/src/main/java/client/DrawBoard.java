@@ -64,8 +64,109 @@ public class DrawBoard {
         for (int c = startCol; c != endCol + colStep; c += colStep) {
             out.append(" ").append((char) ('a' + c - 1)).append(" ");
         }
+        out.append('\n');
         return out.toString();
     }
+
+    public static chess.ChessPosition parsePosition(String s) {
+        if (s.length() != 2) {
+            throw new IllegalArgumentException("Bad position");
+        }
+
+        char file = s.toLowerCase().charAt(0);
+        char rank = s.charAt(1);
+
+        int col = file - 'a' + 1;
+        int row = rank - '0';
+
+        if (col < 1 || col > 8 || row < 1 || row > 8) {
+            throw new IllegalArgumentException("Bad position");
+        }
+
+        return new chess.ChessPosition(row, col);
+    }
+
+
+    public static String drawHighlight(ChessGame game, ChessPosition origin, boolean whitePerspective) {
+        StringBuilder out = new StringBuilder();
+        out.append(EscapeSequences.ERASE_SCREEN);
+        var board = game.getBoard();
+        var moves = game.validMoves(origin);
+        var highlightDestinations = new java.util.HashSet<ChessPosition>();
+        for (var m : moves) {
+            highlightDestinations.add(m.getEndPosition());
+        }
+        int startRow, endRow, rowStep;
+        int startCol, endCol, colStep;
+        if (whitePerspective) {
+            startRow = 8;
+            endRow   = 1;
+            rowStep  = -1;
+            startCol = 1;
+            endCol   = 8;
+            colStep  = 1;
+        } else {
+            startRow = 1;
+            endRow   = 8;
+            rowStep  = 1;
+            startCol = 8;
+            endCol   = 1;
+            colStep  = -1;
+        }
+        out.append("   ");
+        for (int c = startCol; c != endCol + colStep; c += colStep) {
+            out.append(" ").append((char)('a' + c - 1)).append(" ");
+        }
+        out.append("\n");
+
+        for (int r = startRow; r != endRow + rowStep; r += rowStep) {
+            out.append(" ").append(r).append(" ");
+
+            for (int c = startCol; c != endCol + colStep; c += colStep) {
+
+                ChessPosition pos = new ChessPosition(r, c);
+
+                boolean isOrigin = pos.equals(origin);
+                boolean isDestination = highlightDestinations.contains(pos);
+
+                if (isOrigin) {
+                    out.append(EscapeSequences.SET_BG_COLOR_GREEN);
+                } else if (isDestination) {
+                    out.append(EscapeSequences.SET_BG_COLOR_YELLOW);
+                } else {
+                    boolean isDark = (r + c) % 2 == 0;
+                    if (isDark) {
+                        out.append(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+                    } else {
+                        out.append(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+                    }
+                }
+
+                ChessPiece piece = board.getPiece(pos);
+                if (piece == null) {
+                    out.append(EscapeSequences.EMPTY);
+                } else {
+                    if (piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
+                        out.append(getWhitePiece(piece.getPieceType()));
+                    } else {
+                        out.append(getBlackPiece(piece.getPieceType()));
+                    }
+                }
+
+                out.append(EscapeSequences.RESET_BG_COLOR);
+            }
+
+            out.append(" ").append(r).append("\n");
+        }
+
+        out.append("   ");
+        for (int c = startCol; c != endCol + colStep; c += colStep) {
+            out.append(" ").append((char) ('a' + c - 1)).append(" ");
+        }
+        return out.toString();
+    }
+
+
 
     private static String getWhitePiece(ChessPiece.PieceType type) {
         return switch (type) {

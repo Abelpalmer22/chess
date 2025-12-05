@@ -52,6 +52,7 @@ public class LobbyClient implements ClientMode {
                         .append(i+1)
                         .append("\n  Game Name: ")
                         .append(game.gameName())
+                        .append(game.gameOver() ? "\n  <<THIS GAME IS OVER>>" : "")
                         .append("\n  White Player: ")
                         .append(game.whiteUsername())
                         .append("\n  Black Player: ")

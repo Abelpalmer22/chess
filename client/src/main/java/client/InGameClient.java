@@ -7,8 +7,8 @@ public class InGameClient implements ClientMode {
     public InGameClient(ClientState state, boolean observer) {
         this.state = state;
         this.observer = observer;
-        System.out.println(redraw());
     }
+
 
     public String redraw() {
         boolean whitePerspective = true;
@@ -31,40 +31,105 @@ public class InGameClient implements ClientMode {
 
         String cmd = t[0].toLowerCase();
 
-        if (cmd.equals("help")) return """
-                Commands:
-                leave
-                resign
-                redraw
-                quit
-                """;
+        if (cmd.equals("help")) {return """
+        Gameplay Commands:
+        move <start> <end>
+        highlight <square>
+        draw
+        leave
+        resign
+        quit
+        """;}
+
 
         if (cmd.equals("quit")) {
-            if (!observer) {
-                server.joinGame(new requests.JoinGameRequest(null, state.getCurrentGameId()), state.getAuthToken());
-            }
+            var ws = state.getWsClient();
+            var message = new websocket.commands.UserGameCommand(
+                    websocket.commands.UserGameCommand.CommandType.LEAVE,
+                    state.getAuthToken(),
+                    state.getCurrentGameId()
+            );
+            ws.send(message);
             return "__QUIT__";
         }
 
+
         if (cmd.equals("leave")) {
-            if (!observer) {
-                server.joinGame(new requests.JoinGameRequest(null, state.getCurrentGameId()), state.getAuthToken());
-            }
+            var ws = state.getWsClient();
+
+            var message = new websocket.commands.UserGameCommand(
+                    websocket.commands.UserGameCommand.CommandType.LEAVE,
+                    state.getAuthToken(),
+                    state.getCurrentGameId()
+            );
+
+            ws.send(message);
+
             return "__LOBBY__";
         }
 
+
         if (cmd.equals("resign")) {
             if (observer) {
-                return "You are an observer to this game.";
+                return "Observers cannot resign.";
             }
-            server.joinGame(new requests.JoinGameRequest(null, state.getCurrentGameId()), state.getAuthToken());
-            return "resigned";
+
+            var ws = state.getWsClient();
+            var message = new websocket.commands.UserGameCommand(
+                    websocket.commands.UserGameCommand.CommandType.RESIGN,
+                    state.getAuthToken(),
+                    state.getCurrentGameId()
+            );
+
+            ws.send(message);
+            return "You resigned.";
         }
 
-        if (cmd.equals("redraw")) {
+
+        if (cmd.equals("draw")) {
             return redraw();
         }
 
+        if (cmd.equals("move")) {
+            if (observer) {
+                return "Observers cannot make moves.";
+            }
+            if (t.length != 3) {
+                return "Format: move <start> <end>  Example: move e2 e4";
+            }
+
+            try {
+                var startPos = DrawBoard.parsePosition(t[1]);
+                var endPos   = DrawBoard.parsePosition(t[2]);
+
+                var move = new chess.ChessMove(startPos, endPos, null);
+
+                var send = new websocket.commands.MakeMoveCommand(
+                        state.getAuthToken(),
+                        state.getCurrentGameId(),
+                        move
+                );
+
+                state.getWsClient().send(send);
+                return "";
+
+            } catch (Exception e) {
+                return "Invalid move format.";
+            }
+        }
+
+        if (cmd.equals("highlight")) {
+            if (t.length != 2) {
+                return "Format: highlight <position>  Example: highlight e2";
+            }
+            try {
+                var pos = DrawBoard.parsePosition(t[1]);
+                return DrawBoard.drawHighlight(state.getGame(), pos,
+                        "BLACK".equalsIgnoreCase(state.getPlayerColor()) ? false : true);
+            } catch (Exception e) {
+                return "Invalid square.";
+            }
+        }
         return "unknown command";
     }
 }
