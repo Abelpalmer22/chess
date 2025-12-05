@@ -145,12 +145,13 @@ public class WSEndpoint {
                     username + " made move: " + move,
                     ctx
             );
-
-            if (chess.isInCheck(ChessGame.TeamColor.BLACK)) {
-                broadcast(moveCmd.getGameID(), "Black is in check.");
-            }
-            if (chess.isInCheck(ChessGame.TeamColor.WHITE)) {
-                broadcast(moveCmd.getGameID(), "White is in check.");
+            if (!newGameOver) {
+                if (chess.isInCheck(ChessGame.TeamColor.BLACK)) {
+                    broadcast(moveCmd.getGameID(), "Black is in check.");
+                }
+                if (chess.isInCheck(ChessGame.TeamColor.WHITE)) {
+                    broadcast(moveCmd.getGameID(), "White is in check.");
+                }
             }
 
         } catch (DataAccessException e) {
@@ -215,6 +216,13 @@ public class WSEndpoint {
             var auth = authDAO.getAuthentication(cmd.getAuthToken());
             String username = auth.username();
             GameData game = gameDAO.getGame(cmd.getGameID());
+            boolean isWhite = username.equals(game.whiteUsername());
+            boolean isBlack = username.equals(game.blackUsername());
+
+            if (!isWhite && !isBlack) {
+                sendError(ctx, "Observers cannot resign.");
+                return;
+            }
             if (game.gameOver()) {
                 sendError(ctx, "The game is already over.");
                 return;

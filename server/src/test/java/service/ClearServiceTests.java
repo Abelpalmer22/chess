@@ -21,7 +21,7 @@ public class ClearServiceTests {
     void clearTest() throws DataAccessException {
         clearService.clear();
         userDAO.createUser(new UserData("abelpalmer22", "latterdaysaint", "abelpalmer22@gmail.com"));
-        GameData fakeGame = gameDAO.createGame(new GameData(1, "abel", "jesse", "wurgie", new ChessGame()));
+        GameData fakeGame = gameDAO.createGame(new GameData(1, "abel", "jesse", "wurgie", new ChessGame(), false));
         AuthData fakeAuth = authDAO.createAuthentication("abelpalmer22");
         clearService.clear();
         Assertions.assertThrows(DataAccessException.class, () -> gameDAO.getGame(1));

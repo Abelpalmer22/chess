@@ -56,7 +56,7 @@ public class GameServiceTests {
     void joinTestPositive() throws DataAccessException {
         AuthData authwhite = authDAO.createAuthentication("someusernameidk");
         ChessGame ourGame = new ChessGame();
-        GameData game = new GameData(1, null, null, "carlson", ourGame);
+        GameData game = new GameData(1, null, null, "carlson", ourGame, false);
         gameDAO.createGame(game);
         AuthData authblack = authDAO.createAuthentication("black");
         JoinGameRequest reqwhite = new JoinGameRequest("WHITE", game.gameID());
@@ -76,7 +76,7 @@ public class GameServiceTests {
         AuthData authwhite = authDAO.createAuthentication("someusernameidk");
         AuthData authblack = authDAO.createAuthentication(null);
         ChessGame ourGame = new ChessGame();
-        GameData game = new GameData(1, null, null, "carlson", ourGame);
+        GameData game = new GameData(1, null, null, "carlson", ourGame, false);
         gameDAO.createGame(game);
         JoinGameRequest reqwhite = new JoinGameRequest("WHITE", game.gameID());
         JoinGameRequest reqblack = new JoinGameRequest(null, game.gameID());
