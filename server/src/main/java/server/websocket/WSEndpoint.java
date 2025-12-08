@@ -15,12 +15,12 @@ import java.util.concurrent.ConcurrentHashMap;
 public class WSEndpoint {
 
     private static final Gson GSON = new Gson();
-    private static final Map<Integer, GameSession> sessions = new ConcurrentHashMap<>();
+    private static final Map<Integer, GameSession> SESSIONS = new ConcurrentHashMap<>();
     private final GameDAO gameDAO = new MySqlGameDAO();
     private final AuthDAO authDAO = new MySqlAuthDAO();
 
     public void withClose(WsContext ctx) {
-        for (var entry : sessions.entrySet()) {
+        for (var entry : SESSIONS.entrySet()) {
             entry.getValue().scrapClient(ctx);
         }
     }
@@ -54,7 +54,7 @@ public class WSEndpoint {
             }
 
             GameSession gameSession =
-                    sessions.computeIfAbsent(cmd.getGameID(), id -> new GameSession());
+                    SESSIONS.computeIfAbsent(cmd.getGameID(), id -> new GameSession());
 
             gameSession.addClient(ctx, username);
 
@@ -188,7 +188,7 @@ public class WSEndpoint {
 
             if (changed) gameDAO.updateGame(game);
 
-            GameSession gameSession = sessions.get(cmd.getGameID());
+            GameSession gameSession = SESSIONS.get(cmd.getGameID());
             if (gameSession != null) {
                 gameSession.scrapClient(ctx);
             }
@@ -252,7 +252,7 @@ public class WSEndpoint {
         note.message = msg;
 
         String json = GSON.toJson(note);
-        var gameSession = sessions.get(gameID);
+        var gameSession = SESSIONS.get(gameID);
         if (gameSession == null) return;
 
         for (var entry : gameSession.getClients().entrySet()) {
@@ -267,7 +267,7 @@ public class WSEndpoint {
         msg.game = game;
 
         String json = GSON.toJson(msg);
-        var gameSession = sessions.get(gameID);
+        var gameSession = SESSIONS.get(gameID);
         if (gameSession == null) return;
 
         for (var entry : gameSession.getClients().entrySet()) {

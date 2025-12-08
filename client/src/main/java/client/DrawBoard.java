@@ -9,24 +9,9 @@ public class DrawBoard {
         StringBuilder out = new StringBuilder();
         out.append(EscapeSequences.ERASE_SCREEN);
         var board = game.getBoard();
-        int startRow, endRow, rowStep;
-        int startCol, endCol, colStep;
-        if (whitePerspective) {
-            startRow = 8;
-            endRow   = 1;
-            rowStep  = -1;
-            startCol = 1;
-            endCol   = 8;
-            colStep  = 1;
-        } else {
-            startRow = 1;
-            endRow   = 8;
-            rowStep  = 1;
-            startCol = 8;
-            endCol   = 1;
-            colStep  = -1;
-        }
-
+        int[] p = assign(whitePerspective);
+        int startRow = p[0], endRow = p[1], rowStep = p[2];
+        int startCol = p[3], endCol = p[4], colStep = p[5];
         out.append("   ");
         for (int c = startCol; c != endCol + colStep; c += colStep) {
             out.append(" ").append((char) ('a' + c - 1)).append(" ");
@@ -86,6 +71,9 @@ public class DrawBoard {
         return new chess.ChessPosition(row, col);
     }
 
+    private static int[] assign(boolean whitePerspective) {
+        return whitePerspective ? new int[] {8, 1, -1, 1, 8, 1} : new int[] {1, 8, 1, 8, 1, -1};
+    }
 
     public static String drawHighlight(ChessGame game, ChessPosition origin, boolean whitePerspective) {
         StringBuilder out = new StringBuilder();
@@ -96,23 +84,9 @@ public class DrawBoard {
         for (var m : moves) {
             highlightDestinations.add(m.getEndPosition());
         }
-        int startRow, endRow, rowStep;
-        int startCol, endCol, colStep;
-        if (whitePerspective) {
-            startRow = 8;
-            endRow   = 1;
-            rowStep  = -1;
-            startCol = 1;
-            endCol   = 8;
-            colStep  = 1;
-        } else {
-            startRow = 1;
-            endRow   = 8;
-            rowStep  = 1;
-            startCol = 8;
-            endCol   = 1;
-            colStep  = -1;
-        }
+        int[] p = assign(whitePerspective);
+        int startRow = p[0], endRow = p[1], rowStep = p[2];
+        int startCol = p[3], endCol = p[4], colStep = p[5];
         out.append("   ");
         for (int c = startCol; c != endCol + colStep; c += colStep) {
             out.append(" ").append((char)('a' + c - 1)).append(" ");
