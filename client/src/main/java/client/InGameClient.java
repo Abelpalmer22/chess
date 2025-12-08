@@ -125,7 +125,7 @@ public class InGameClient implements ClientMode {
             try {
                 var pos = DrawBoard.parsePosition(t[1]);
                 return DrawBoard.drawHighlight(state.getGame(), pos,
-                        "BLACK".equalsIgnoreCase(state.getPlayerColor()) ? false : true);
+                        !"BLACK".equalsIgnoreCase(state.getPlayerColor()));
             } catch (Exception e) {
                 return "Invalid square.";
             }

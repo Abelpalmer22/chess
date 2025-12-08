@@ -120,7 +120,8 @@ public class DrawBoard {
                 if (piece == null) {
                     out.append(EscapeSequences.EMPTY);
                 } else {
-                    if (piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
+                    ChessGame.TeamColor color = piece.getTeamColor();
+                    if (color == ChessGame.TeamColor.BLACK) {
                         out.append(getWhitePiece(piece.getPieceType()));
                     } else {
                         out.append(getBlackPiece(piece.getPieceType()));
