@@ -22,76 +22,78 @@ public class LobbyClient implements ClientMode {
         String cmd = t[0].toLowerCase();
         String authToken = state.getAuthToken();
 
-        if (cmd.equals("help")) {return """
-                Commands:
-                list
-                create
-                play
-                observe
-                logout
-                quit
-                """;}
-
-        if (cmd.equals("quit")) {
-
-            return "__QUIT__";
-        }
-
-        if (cmd.equals("logout")) {
-            server.logout(state.getAuthToken());
-            state.setAuthToken(null);
-            return "__LOGGED_OUT__";
-        }
-
-        if (cmd.equals("list")) {
-            var res = server.listGames(authToken);
-            StringBuilder gamesList = new StringBuilder();
-            int i = 0;
-            for (GameData game: res.games()) {
-                gamesList.append("Game Number: ")
-                        .append(i+1)
-                        .append("\n  Game Name: ")
-                        .append(game.gameName())
-                        .append(game.gameOver() ? "\n  <<THIS GAME IS OVER>>" : "")
-                        .append("\n  White Player: ")
-                        .append(game.whiteUsername() != null ? game.whiteUsername() : "")
-                        .append("\n  Black Player: ")
-                        .append(game.blackUsername() != null ? game.blackUsername() : "")
-                        .append("\n");
-                i++;
+        switch (cmd) {
+            case "help" -> {
+                return """
+                        Commands:
+                        list
+                        create
+                        play
+                        observe
+                        logout
+                        quit
+                        """;
             }
-            return gamesList.toString();
+            case "quit" -> {
+                return "__QUIT__";
+            }
+            case "logout" -> {
+                server.logout(state.getAuthToken());
+                state.setAuthToken(null);
+                return "__LOGGED_OUT__";
+            }
+            case "list" -> {
+                var res = server.listGames(authToken);
+                StringBuilder gamesList = new StringBuilder();
+                int i = 0;
+                for (GameData game : res.games()) {
+                    gamesList.append("Game Number: ")
+                            .append(i + 1)
+                            .append("\n  Game Name: ")
+                            .append(game.gameName())
+                            .append(game.gameOver() ? "\n  <<THIS GAME IS OVER>>" : "")
+                            .append("\n  White Player: ")
+                            .append(game.whiteUsername() != null ? game.whiteUsername() : "")
+                            .append("\n  Black Player: ")
+                            .append(game.blackUsername() != null ? game.blackUsername() : "")
+                            .append("\n");
+                    i++;
+                }
+                return gamesList.toString();
+            }
+            case "create" -> {
+                if (t.length < 2) {
+                    return "format: create <gameName>";
+                }
+                var req = new CreateGameRequest(t[1]);
+                var res = server.createGame(req, authToken);
+                return "created game " + res.gameID();
+            }
+            case "play" -> {
+                if (t.length < 3) return "format: play <gameID> <WHITE|BLACK>";
+
+                int id = Integer.parseInt(t[1]);
+                var req = new JoinGameRequest(t[2], id);
+                server.joinGame(req, authToken);
+
+                return "__GAME__ " + authToken + " " + id + " " + t[2].toUpperCase();
+            }
+            case "observe" -> {
+                if (t.length < 2) {
+                    return "format: observe <gameID>";
+                }
+                int id = Integer.parseInt(t[1]);
+                var req = new JoinGameRequest(null, id);
+                server.joinGame(req, authToken);
+
+                state.setCurrentGameId(id);
+                state.setPlayerColor(null);
+                state.setGame(new chess.ChessGame());
+
+                return "__OBSERVE__";
+            }
         }
 
-        if (cmd.equals("create")) {
-            if (t.length < 2) {return "format: create <gameName>";}
-            var req = new CreateGameRequest(t[1]);
-            var res = server.createGame(req, authToken);
-            return "created game " + res.gameID();
-        }
-        if (cmd.equals("play")) {
-            if (t.length < 3) return "format: play <gameID> <WHITE|BLACK>";
-
-            int id = Integer.parseInt(t[1]);
-            var req = new JoinGameRequest(t[2], id);
-            server.joinGame(req, authToken);
-
-            return "__GAME__ " + authToken + " " + id + " " + t[2].toUpperCase();
-        }
-
-
-        if (cmd.equals("observe")) {
-            if (t.length < 2) {return "format: observe <gameID>";}
-            int id = Integer.parseInt(t[1]);
-            var req = new JoinGameRequest(null, id);
-            server.joinGame(req, authToken);
-
-            state.setCurrentGameId(id);
-            state.setPlayerColor(null);
-            state.setGame(new chess.ChessGame());
-
-            return "__OBSERVE__";
-        }
 
         return "unknown command";
     }
