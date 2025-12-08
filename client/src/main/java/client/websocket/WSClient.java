@@ -38,7 +38,7 @@ public class WSClient {
                         try {
                             Thread.sleep(25_000); // make it stop randomly exiting on me
                             WSClient.this.session.getAsyncRemote().sendText("DONTDIEONME");
-                        } catch (Exception ignored) {}
+                        } catch (Exception ignored) {} // NOTED, AND IGNORED
                     }
                 }).start();
             }
