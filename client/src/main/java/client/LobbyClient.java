@@ -63,14 +63,14 @@ public class LobbyClient implements ClientMode {
             }
             case "create" -> {
                 if (t.length < 2) {
-                    return "format: create <gameName>";
+                    return "format: create <Game Name>";
                 }
                 var req = new CreateGameRequest(t[1]);
                 var res = server.createGame(req, authToken);
                 return "created game " + res.gameID();
             }
             case "play" -> {
-                if (t.length < 3) {return "format: play <gameID> <WHITE|BLACK>";}
+                if (t.length < 3) {return "format: play <gameID> <white|black>";}
 
                 int id = Integer.parseInt(t[1]);
                 var req = new JoinGameRequest(t[2], id);
@@ -80,7 +80,7 @@ public class LobbyClient implements ClientMode {
             }
             case "observe" -> {
                 if (t.length < 2) {
-                    return "format: observe <gameID>";
+                    return "format: observe <game ID>";
                 }
                 int id = Integer.parseInt(t[1]);
                 var req = new JoinGameRequest(null, id);
