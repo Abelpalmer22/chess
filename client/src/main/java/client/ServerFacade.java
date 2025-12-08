@@ -44,11 +44,6 @@ public class ServerFacade {
         send("PUT", "/game", req, authToken, JoinGameResult.class);
     }
 
-    public void leaveGame(int gameID, String authToken) {
-        send("DELETE", "/game/" + gameID, null, authToken, Void.class);
-    }
-
-
     public void clear() throws RuntimeException {
         send("DELETE", "/db", null, null, Void.class);
     }

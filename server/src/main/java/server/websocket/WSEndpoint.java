@@ -28,7 +28,7 @@ public class WSEndpoint {
     public void withMessage(WsContext ctx, String message) {
         try {
             UserGameCommand cmd = GSON.fromJson(message, UserGameCommand.class);
-            if (cmd == null || cmd.getCommandType() == null) return;
+            if (cmd == null || cmd.getCommandType() == null) {return;}
 
             switch (cmd.getCommandType()) {
                 case CONNECT -> handleConnect(ctx, cmd);
@@ -127,7 +127,7 @@ public class WSEndpoint {
                 newGameOver = true;
             }
 
-            // Update DB
+            // Update db
             GameData updated = new GameData(
                     game.gameID(),
                     game.whiteUsername(),
@@ -186,7 +186,7 @@ public class WSEndpoint {
                 changed = true;
             }
 
-            if (changed) gameDAO.updateGame(game);
+            if (changed) {gameDAO.updateGame(game);}
 
             GameSession gameSession = SESSIONS.get(cmd.getGameID());
             if (gameSession != null) {
@@ -253,11 +253,11 @@ public class WSEndpoint {
 
         String json = GSON.toJson(note);
         var gameSession = SESSIONS.get(gameID);
-        if (gameSession == null) return;
+        if (gameSession == null) {return;}
 
         for (var entry : gameSession.getClients().entrySet()) {
             WsContext client = entry.getKey();
-            if (exclude != null && client.equals(exclude)) continue;
+            if (exclude != null && client.equals(exclude)) {continue;}
             client.send(json);
         }
     }
@@ -265,10 +265,9 @@ public class WSEndpoint {
     private void broadcastLoadGame(int gameID, ChessGame game) {
         LoadGameMessage msg = new LoadGameMessage();
         msg.game = game;
-
         String json = GSON.toJson(msg);
         var gameSession = SESSIONS.get(gameID);
-        if (gameSession == null) return;
+        if (gameSession == null) {return;}
 
         for (var entry : gameSession.getClients().entrySet()) {
             entry.getKey().send(json);

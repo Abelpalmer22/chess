@@ -70,7 +70,7 @@ public class LobbyClient implements ClientMode {
                 return "created game " + res.gameID();
             }
             case "play" -> {
-                if (t.length < 3) return "format: play <gameID> <WHITE|BLACK>";
+                if (t.length < 3) {return "format: play <gameID> <WHITE|BLACK>";}
 
                 int id = Integer.parseInt(t[1]);
                 var req = new JoinGameRequest(t[2], id);
