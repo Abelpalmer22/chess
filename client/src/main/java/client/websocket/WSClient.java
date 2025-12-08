@@ -1,6 +1,4 @@
 package client.websocket;
-
-import client.ClientMode;
 import client.ClientState;
 import client.InGameClient;
 import com.google.gson.Gson;

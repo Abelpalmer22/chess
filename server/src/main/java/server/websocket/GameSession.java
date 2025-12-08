@@ -12,7 +12,7 @@ public class GameSession { // basically the chat room for a specific game
         clients.put(ctx, username);
     }
 
-    public void removeClient(WsContext ctx) {
+    public void scrapClient(WsContext ctx) {
         clients.remove(ctx);
     }
 

@@ -22,7 +22,7 @@ public class WSEndpoint {
 
     public void onClose(WsContext ctx) {
         for (var entry : sessions.entrySet()) {
-            entry.getValue().removeClient(ctx);
+            entry.getValue().scrapClient(ctx);
         }
     }
 
@@ -102,7 +102,7 @@ public class WSEndpoint {
             try {
                 chess.makeMove(move);
             } catch (InvalidMoveException ex) {
-                sendError(ctx, "That move is not legal.");
+                sendError(ctx, "Illegal move");
                 return;
             }
 
@@ -188,7 +188,7 @@ public class WSEndpoint {
 
             GameSession gameSession = sessions.get(cmd.getGameID());
             if (gameSession != null) {
-                gameSession.removeClient(ctx);
+                gameSession.scrapClient(ctx);
             }
 
             sendMessageExceptOne(
@@ -210,7 +210,7 @@ public class WSEndpoint {
             boolean isWhite = username.equals(game.whiteUsername());
             boolean isBlack = username.equals(game.blackUsername());
 
-            if (!isWhite && !isBlack) {
+            if (!isWhite && !isBlack) { // jank test to see if it's an observer
                 sendError(ctx, "Observers cannot resign.");
                 return;
             }
