@@ -38,52 +38,22 @@ public class GameService {
         if (r == null) {
             throw new DataAccessException("bad request");
         }
-
+        if (r.playerColor() == null) {throw new DataAccessException("bad request");}
+        String teamsColor = r.playerColor().trim().toUpperCase();
+        if (teamsColor.isEmpty()) {
+            throw new DataAccessException("bad request");
+        }
+        if (!teamsColor.equals("WHITE") && !teamsColor.equals("BLACK")) {
+            throw new DataAccessException("bad request");
+        }
         var auth = authDAO.getAuthentication(authToken);
         String username = auth.username();
-
         GameData game = gameDAO.getGame(r.gameID());
         if (game.gameOver()) {
             throw new DataAccessException("forbidden");
         }
 
-        if (r.playerColor() == null) {
-            boolean changed = false;
-
-            if (username.equals(game.whiteUsername())) {
-                game = new GameData(
-                        game.gameID(),
-                        null,
-                        game.blackUsername(),
-                        game.gameName(),
-                        game.game(),
-                        game.gameOver()
-                );
-                changed = true;
-            }
-
-            if (username.equals(game.blackUsername())) {
-                game = new GameData(
-                        game.gameID(),
-                        game.whiteUsername(),
-                        null,
-                        game.gameName(),
-                        game.game(),
-                        game.gameOver()
-                );
-                changed = true;
-            }
-
-            if (changed) gameDAO.updateGame(game);
-            return new JoinGameResult();
-        }
-
-        String color = r.playerColor().trim().toUpperCase();
-        if (color.isEmpty()) {
-            throw new DataAccessException("bad request");
-        }
-
-        if ("WHITE".equals(color)) {
+        if (teamsColor.equals("WHITE")) {
             if (game.whiteUsername() != null) {
                 throw new DataAccessException("already taken");
             }
@@ -95,8 +65,7 @@ public class GameService {
                     game.game(),
                     game.gameOver()
             );
-        }
-        else if ("BLACK".equals(color)) {
+        } else {
             if (game.blackUsername() != null) {
                 throw new DataAccessException("already taken");
             }
@@ -109,10 +78,6 @@ public class GameService {
                     game.gameOver()
             );
         }
-        else {
-            throw new DataAccessException("bad request");
-        }
-
         gameDAO.updateGame(game);
         return new JoinGameResult();
     }

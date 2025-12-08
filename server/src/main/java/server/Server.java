@@ -40,8 +40,6 @@ public class Server {
 
         javalin.ws("/ws", ws -> {
             WSEndpoint endpoint = new WSEndpoint();
-
-            ws.onConnect(endpoint::onConnect);
             ws.onMessage(ctx -> endpoint.onMessage(ctx, ctx.message()));
             ws.onClose(endpoint::onClose);
         });

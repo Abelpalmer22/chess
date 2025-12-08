@@ -20,12 +20,7 @@ public class WSEndpoint {
     private final GameDAO gameDAO = new MySqlGameDAO();
     private final AuthDAO authDAO = new MySqlAuthDAO();
 
-    public void onConnect(WsContext ctx) {
-        System.out.println("WS CONNECT: " + ctx.sessionId());
-    }
-
     public void onClose(WsContext ctx) {
-        System.out.println("WS CLOSE: " + ctx.sessionId());
         for (var entry : sessions.entrySet()) {
             entry.getValue().removeClient(ctx);
         }
@@ -39,7 +34,7 @@ public class WSEndpoint {
             }
             switch (cmd.getCommandType()) {
                 case CONNECT -> handleConnect(ctx, cmd);
-                case MAKE_MOVE -> handleMakeMove(ctx, message, cmd);  // 👈 pass JSON
+                case MAKE_MOVE -> handleMakeMove(ctx, message, cmd);
                 case LEAVE   -> handleLeave(ctx, cmd);
                 case RESIGN  -> handleResign(ctx, cmd);
             }
