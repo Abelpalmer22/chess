@@ -80,7 +80,6 @@ public class WSClient {
 
             case ERROR -> {
                 ErrorMessage msg = gson.fromJson(json, ErrorMessage.class);
-
                 System.out.println();
                 System.out.println("Error: " + msg.errorMessage);
                 printPrompt();
