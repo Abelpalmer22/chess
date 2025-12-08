@@ -46,25 +46,21 @@ public class WSEndpoint {
     private void handleConnect(WsContext ctx, UserGameCommand cmd) {
         try {
             var auth = authDAO.getAuthentication(cmd.getAuthToken());
-            String username = auth.username();
 
             GameData game = gameDAO.getGame(cmd.getGameID());
             if (game.gameOver()) {
                 sendError(ctx, "This game is over. No new players or observers may join.");
                 return;
             }
-
             GameSession gameSession =
                     sessions.computeIfAbsent(cmd.getGameID(), id -> new GameSession());
-
-            gameSession.addClient(ctx, username);
+            gameSession.addClient(ctx, auth.username());
             LoadGameMessage load = new LoadGameMessage();
             load.game = game.game();
             ctx.send(GSON.toJson(load));
-            broadcastExcept(cmd.getGameID(),
-                    username + " connected to the game.",
+            sendMessageExceptOne(cmd.getGameID(),
+                    auth.username() + " connected to the game.",
                     ctx);
-
         } catch (DataAccessException e) {
             sendError(ctx, e.getMessage());
         }
@@ -113,12 +109,12 @@ public class WSEndpoint {
             boolean newGameOver = game.gameOver();
 
             if (chess.isInCheckmate(ChessGame.TeamColor.WHITE)) {
-                broadcast(moveCmd.getGameID(), "White is in checkmate. Game over.");
+                sendMessage(moveCmd.getGameID(), "White is in checkmate. Game over.");
                 newGameOver = true;
             }
 
             if (chess.isInCheckmate(ChessGame.TeamColor.BLACK)) {
-                broadcast(moveCmd.getGameID(), "Black is in checkmate. Game over.");
+                sendMessage(moveCmd.getGameID(), "Black is in checkmate. Game over.");
                 newGameOver = true;
             }
 
@@ -135,17 +131,17 @@ public class WSEndpoint {
 
             broadcastLoadGame(moveCmd.getGameID(), chess);
 
-            broadcastExcept(
+            sendMessageExceptOne(
                     moveCmd.getGameID(),
                     username + " made move: " + move,
                     ctx
             );
             if (!newGameOver) {
                 if (chess.isInCheck(ChessGame.TeamColor.BLACK)) {
-                    broadcast(moveCmd.getGameID(), "Black is in check.");
+                    sendMessage(moveCmd.getGameID(), "Black is in check.");
                 }
                 if (chess.isInCheck(ChessGame.TeamColor.WHITE)) {
-                    broadcast(moveCmd.getGameID(), "White is in check.");
+                    sendMessage(moveCmd.getGameID(), "White is in check.");
                 }
             }
 
@@ -195,7 +191,7 @@ public class WSEndpoint {
                 gameSession.removeClient(ctx);
             }
 
-            broadcastExcept(
+            sendMessageExceptOne(
                     cmd.getGameID(),
                     username + " left the game.",
                     ctx
@@ -233,7 +229,7 @@ public class WSEndpoint {
             );
 
             gameDAO.updateGame(updated);
-            broadcast(cmd.getGameID(), username + " resigned. The game is over.");
+            sendMessage(cmd.getGameID(), username + " resigned. The game is over.");
 
         } catch (Exception e) {
             sendError(ctx, e.getMessage());
@@ -246,7 +242,7 @@ public class WSEndpoint {
         ctx.send(GSON.toJson(err));
     }
 
-    private void broadcast(int gameID, String msg) {
+    private void sendMessage(int gameID, String msg) {
         NotificationMessage note = new NotificationMessage();
         note.message = msg;
 
@@ -263,7 +259,7 @@ public class WSEndpoint {
     }
 
 
-    private void broadcastExcept(int gameID, String msg, WsContext exclude) {
+    private void sendMessageExceptOne(int gameID, String msg, WsContext exclude) {
         NotificationMessage note = new NotificationMessage();
         note.message = msg;
 
