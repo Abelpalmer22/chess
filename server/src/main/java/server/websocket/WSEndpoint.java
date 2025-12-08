@@ -71,7 +71,7 @@ public class WSEndpoint {
         }
     }
 
-    private void handleMakeMove(WsContext ctx, String json, UserGameCommand baseCmd) {
+    private void handleMakeMove(WsContext ctx, String json, UserGameCommand cmd) {
         try {
             MakeMoveCommand moveCmd = GSON.fromJson(json, MakeMoveCommand.class);
             ChessMove move = moveCmd.move;
