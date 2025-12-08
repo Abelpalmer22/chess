@@ -93,8 +93,6 @@ public class LobbyClient implements ClientMode {
                 return "__OBSERVE__";
             }
         }
-
-
         return "unknown command";
     }
 }

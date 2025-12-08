@@ -4,7 +4,7 @@ import io.javalin.websocket.WsContext;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class GameSession {
+public class GameSession { // basically the chat room for a specific game
 
     private final Map<WsContext, String> clients = new ConcurrentHashMap<>();
 
