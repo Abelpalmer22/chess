@@ -40,8 +40,6 @@ public class InGameClient implements ClientMode {
         resign
         quit
         """;}
-
-
         if (cmd.equals("quit")) {
             var ws = state.getWsClient();
             var message = new websocket.commands.UserGameCommand(
@@ -52,8 +50,6 @@ public class InGameClient implements ClientMode {
             ws.send(message);
             return "__QUIT__";
         }
-
-
         if (cmd.equals("leave")) {
             var ws = state.getWsClient();
 
@@ -62,13 +58,9 @@ public class InGameClient implements ClientMode {
                     state.getAuthToken(),
                     state.getCurrentGameId()
             );
-
             ws.send(message);
-
             return "__LOBBY__";
         }
-
-
         if (cmd.equals("resign")) {
             if (observer) {
                 return "Observers cannot resign.";
@@ -80,16 +72,12 @@ public class InGameClient implements ClientMode {
                     state.getAuthToken(),
                     state.getCurrentGameId()
             );
-
             ws.send(message);
             return "You resigned.";
         }
-
-
         if (cmd.equals("draw")) {
             return redraw();
         }
-
         if (cmd.equals("move")) {
             if (observer) {
                 return "Observers cannot make moves.";
@@ -97,27 +85,17 @@ public class InGameClient implements ClientMode {
             if (t.length != 3) {
                 return "Format: move <start> <end>  Example: move e2 e4";
             }
-
             try {
                 var startPos = DrawBoard.parsePosition(t[1]);
                 var endPos   = DrawBoard.parsePosition(t[2]);
-
                 var move = new chess.ChessMove(startPos, endPos, null);
-
-                var send = new websocket.commands.MakeMoveCommand(
-                        state.getAuthToken(),
-                        state.getCurrentGameId(),
-                        move
-                );
-
+                var send = new websocket.commands.MakeMoveCommand(state.getAuthToken(), state.getCurrentGameId(), move);
                 state.getWsClient().send(send);
                 return "";
-
             } catch (Exception e) {
                 return "Invalid move format.";
             }
         }
-
         if (cmd.equals("highlight")) {
             if (t.length != 2) {
                 return "Format: highlight <position>  Example: highlight e2";
