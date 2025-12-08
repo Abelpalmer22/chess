@@ -29,29 +29,21 @@ public class WSClient {
 
     public void connect() throws Exception {
         ClientManager client = ClientManager.createClient();
-
         client.connectToServer(new Endpoint() {
             @Override
             public void onOpen(Session session, EndpointConfig config) {
                 WSClient.this.session = session;
                 state.setWsClient(WSClient.this);
                 session.addMessageHandler(String.class, WSClient.this::onMessage);
-
                 new Thread(() -> {
                     while (WSClient.this.session != null && WSClient.this.session.isOpen()) {
                         try {
                             Thread.sleep(25_000); // make it stop randomly exiting on me
-                            WSClient.this.session.getAsyncRemote().sendText("{\"type\":\"PING\"}");
+                            WSClient.this.session.getAsyncRemote().sendText("DONTDIEONME");
                         } catch (Exception ignored) {}
                     }
                 }).start();
             }
-
-            @Override
-            public void onClose(Session session, CloseReason closeReason) {
-                System.out.println("WebSocket closed: " + closeReason);
-            }
-
         }, ClientEndpointConfig.Builder.create().build(), new URI("ws://localhost:8080/ws"));
     }
 
