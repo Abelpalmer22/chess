@@ -40,8 +40,8 @@ public class Server {
 
         javalin.ws("/ws", ws -> {
             WSEndpoint endpoint = new WSEndpoint();
-            ws.onMessage(ctx -> endpoint.onMessage(ctx, ctx.message()));
-            ws.onClose(endpoint::onClose);
+            ws.onMessage(ctx -> endpoint.withMessage(ctx, ctx.message()));
+            ws.onClose(endpoint::withClose);
         });
 
         javalin.delete("/db", handler::clear);

@@ -32,7 +32,7 @@ public class WSClient {
             public void onOpen(Session session, EndpointConfig config) {
                 WSClient.this.session = session;
                 state.setWsClient(WSClient.this);
-                session.addMessageHandler(String.class, WSClient.this::onMessage);
+                session.addMessageHandler(String.class, WSClient.this::withConnect);
                 new Thread(() -> {
                     while (WSClient.this.session != null && WSClient.this.session.isOpen()) {
                         try {
@@ -55,7 +55,7 @@ public class WSClient {
         System.out.flush();
     }
 
-    private void onMessage(String json) {
+    private void withConnect(String json) {
         ServerMessage base = gson.fromJson(json, ServerMessage.class);
 
         switch (base.getServerMessageType()) {
