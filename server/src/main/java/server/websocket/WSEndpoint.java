@@ -57,19 +57,27 @@ public class WSEndpoint {
                     SESSIONS.computeIfAbsent(cmd.getGameID(), id -> new GameSession());
 
             gameSession.addClient(ctx, username);
-
             LoadGameMessage load = new LoadGameMessage();
             load.game = game.game();
             ctx.send(GSON.toJson(load));
 
+            String role;
+            if (username.equals(game.whiteUsername())) {
+                role = "white";
+            } else if (username.equals(game.blackUsername())) {
+                role = "black";
+            } else {
+                role = "observer";
+            }
             sendMessage(cmd.getGameID(),
-                    username + " connected to the game.",
+                    username + " connected to the game as " + role,
                     ctx);
 
         } catch (DataAccessException e) {
             sendError(ctx, e.getMessage());
         }
     }
+
 
     private void handleMakeMove(WsContext ctx, String json, UserGameCommand cmd) {
         try {

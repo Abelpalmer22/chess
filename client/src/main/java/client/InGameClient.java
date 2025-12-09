@@ -62,17 +62,28 @@ public class InGameClient implements ClientMode {
         String cmd = t[0].toLowerCase();
 
         if (cmd.equals("help")) {
-            return """
-                    Gameplay Commands:
-                    move <start> <end> [promotion]
-                      e.g. move e7 e8 q
-                    highlight <square>
-                    draw
-                    leave
-                    resign
-                    quit
-                    """;
+            if (observer) {
+                return """
+                Observer Commands:
+                highlight <square>
+                draw
+                leave
+                quit
+                """;
+            } else {
+                return """
+                Gameplay Commands:
+                move <start> <end> [promotion]
+                  e.g. move e7 e8 q
+                highlight <square>
+                draw
+                leave
+                resign
+                quit
+                """;
+            }
         }
+
 
         if (cmd.equals("quit")) {
             var ws = state.getWsClient();

@@ -65,7 +65,7 @@ public class WSClient {
             case LOAD_GAME -> {
                 LoadGameMessage msg = gson.fromJson(json, LoadGameMessage.class);
                 state.setGame(msg.game);
-                InGameClient view = new InGameClient(state, false);
+                InGameClient view = new InGameClient(state, state.getPlayerColor() == null);
 
                 System.out.println();
                 System.out.print(view.redraw());
@@ -74,8 +74,13 @@ public class WSClient {
 
             case NOTIFICATION -> {
                 NotificationMessage msg = gson.fromJson(json, NotificationMessage.class);
+                if (state.getGame() != null) {
+                    boolean isObserver = (state.getPlayerColor() == null);
+                    InGameClient view = new InGameClient(state, isObserver);
 
-                System.out.println();
+                    System.out.println();
+                    System.out.print(view.redraw());
+                }
                 System.out.println(msg.message);
                 printPrompt();
             }

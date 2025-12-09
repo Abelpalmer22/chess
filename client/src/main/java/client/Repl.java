@@ -76,9 +76,24 @@ public class Repl {
 
             if (result.equals("__OBSERVE__")) {
                 System.out.println("You are now observing the game.");
+                var ws = new client.websocket.WSClient(state);
+                try {
+                    ws.connect();
+                    state.setWsClient(ws);
+                } catch (Exception e) {
+                    System.out.println("Failed to open WebSocket: " + e.getMessage());
+                    continue;
+                }
+                var connectCmd = new websocket.commands.UserGameCommand(
+                        websocket.commands.UserGameCommand.CommandType.CONNECT,
+                        state.getAuthToken(),
+                        state.getCurrentGameId()
+                );
+                ws.send(connectCmd);
                 mode = new InGameClient(state, true);
                 continue;
             }
+
             System.out.println(result);
         }
     }
