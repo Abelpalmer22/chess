@@ -13,6 +13,7 @@ import org.glassfish.tyrus.client.ClientManager;
 
 import jakarta.websocket.*;
 import java.net.URI;
+import java.nio.ByteBuffer;
 
 
 public class WSClient {
@@ -34,13 +35,14 @@ public class WSClient {
                 state.setWsClient(WSClient.this);
                 session.addMessageHandler(String.class, WSClient.this::withConnect);
                 new Thread(() -> {
-                    while (WSClient.this.session != null && WSClient.this.session.isOpen()) {
+                    while (session != null && session.isOpen()) {
                         try {
-                            Thread.sleep(25_000); // make it stop randomly exiting on me
-                            WSClient.this.session.getAsyncRemote().sendText("DONTDIEONME");
-                        } catch (Exception ignored) {} // NOTED, AND IGNORED
+                            Thread.sleep(20_000);
+                            session.getAsyncRemote().sendPing(ByteBuffer.wrap(new byte[]{1}));
+                        } catch (Exception ignored) {}
                     }
                 }).start();
+
             }
         }, ClientEndpointConfig.Builder.create().build(), new URI("ws://localhost:8080/ws"));
     }

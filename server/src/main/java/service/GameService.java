@@ -37,7 +37,17 @@ public class GameService {
         if (r == null) {
             throw new DataAccessException("bad request");
         }
-        if (r.playerColor() == null) {throw new DataAccessException("bad request");}
+        if (r.playerColor() == null) {
+            var auth = authDAO.getAuthentication(authToken);
+            GameData game = gameDAO.getGame(r.gameID());
+            if (game == null) {
+                throw new DataAccessException("bad request");
+            }
+            if (game.gameOver()) {
+                throw new DataAccessException("forbidden");
+            }
+            return new JoinGameResult();
+        }
         String teamsColor = r.playerColor().trim().toUpperCase();
         if (teamsColor.isEmpty()) {
             throw new DataAccessException("bad request");
@@ -45,9 +55,14 @@ public class GameService {
         if (!teamsColor.equals("WHITE") && !teamsColor.equals("BLACK")) {
             throw new DataAccessException("bad request");
         }
+
         var auth = authDAO.getAuthentication(authToken);
         String username = auth.username();
+
         GameData game = gameDAO.getGame(r.gameID());
+        if (game == null) {
+            throw new DataAccessException("bad request");
+        }
         if (game.gameOver()) {
             throw new DataAccessException("forbidden");
         }
@@ -77,7 +92,9 @@ public class GameService {
                     game.gameOver()
             );
         }
+
         gameDAO.updateGame(game);
         return new JoinGameResult();
     }
+
 }

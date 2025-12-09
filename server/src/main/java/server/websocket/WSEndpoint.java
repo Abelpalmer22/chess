@@ -117,17 +117,18 @@ public class WSEndpoint {
             }
 
             boolean newGameOver = game.gameOver();
+            String whiteUser = game.whiteUsername();
+            String blackUser = game.blackUsername();
 
             if (chess.isInCheckmate(ChessGame.TeamColor.WHITE)) {
-                sendMessage(moveCmd.getGameID(), "White is in checkmate. Game over.", null);
+                sendMessage(moveCmd.getGameID(), whiteUser + " is in checkmate. Game over.", null);
                 newGameOver = true;
             }
             if (chess.isInCheckmate(ChessGame.TeamColor.BLACK)) {
-                sendMessage(moveCmd.getGameID(), "Black is in checkmate. Game over.", null);
+                sendMessage(moveCmd.getGameID(), blackUser + "is in checkmate. Game over.", null);
                 newGameOver = true;
             }
 
-            // Update db
             GameData updated = new GameData(
                     game.gameID(),
                     game.whiteUsername(),
@@ -149,10 +150,10 @@ public class WSEndpoint {
 
             if (!newGameOver) {
                 if (chess.isInCheck(ChessGame.TeamColor.BLACK)) {
-                    sendMessage(moveCmd.getGameID(), "Black is in check.", null);
+                    sendMessage(moveCmd.getGameID(), blackUser + " is in check.", null);
                 }
                 if (chess.isInCheck(ChessGame.TeamColor.WHITE)) {
-                    sendMessage(moveCmd.getGameID(), "White is in check.", null);
+                    sendMessage(moveCmd.getGameID(), whiteUser + " is in check.", null);
                 }
             }
 

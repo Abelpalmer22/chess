@@ -107,7 +107,17 @@ public class ChessGame {
             int endCol = finalPosition.getColumn();
             ChessBoard fakeBoard = board.copy();
             ChessPiece movingPiece = fakeBoard.getPiece(startPosition);
+
             fakeBoard.squares[startRow-1][startCol-1] = null;
+            if (movingPiece.getPieceType() == ChessPiece.PieceType.PAWN &&
+                    (endRow == 8 || endRow == 1) &&
+                    move.getPromotionPiece() != null) {
+                fakeBoard.squares[endRow-1][endCol-1] =
+                        new ChessPiece(movingPiece.getTeamColor(), move.getPromotionPiece());
+            } else {
+                fakeBoard.squares[endRow-1][endCol-1] = movingPiece;
+            }
+
             fakeBoard.squares[endRow-1][endCol-1] = movingPiece;
             if (!inCheck(fakeBoard, color)) {
                 validMoves.add(move);

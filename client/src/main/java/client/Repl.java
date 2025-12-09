@@ -28,16 +28,18 @@ public class Repl {
                 result = "Error: " + clean(e.getMessage());
             }
 
-            if (result.equals("__QUIT__")) { return; }
-
-            if (result.equals("__LOGGED_OUT__")) {
-                mode = new PreloginClient(state);
-                continue;
-            }
-
-            if (result.equals("__LOBBY__")) {
-                mode = new LobbyClient(state);
-                continue;
+            switch (result) {
+                case "__QUIT__" -> {
+                    return;
+                }
+                case "__LOGGED_OUT__" -> {
+                    mode = new PreloginClient(state);
+                    continue;
+                }
+                case "__LOBBY__" -> {
+                    mode = new LobbyClient(state);
+                    continue;
+                }
             }
 
             if (result.startsWith("__GAME__")) {
@@ -54,7 +56,7 @@ public class Repl {
 
                 var ws = new client.websocket.WSClient(state);
                 try {
-                    ws.connect();  // opens the socket
+                    ws.connect();
                     state.setWsClient(ws);
                 } catch (Exception e) {
                     System.out.println("Failed to open WebSocket: " + e.getMessage());
@@ -71,14 +73,16 @@ public class Repl {
                 mode = new InGameClient(state, false);
                 continue;
             }
-            System.out.println(result);
 
             if (result.equals("__OBSERVE__")) {
+                System.out.println("You are now observing the game.");
                 mode = new InGameClient(state, true);
+                continue;
             }
+            System.out.println(result);
         }
-
     }
+
 
     private String clean(String m) {
         if (m == null) {return "unknown error";}
